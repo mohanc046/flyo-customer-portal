@@ -11,8 +11,8 @@ interface ProductProps {
 const ProductGrid: React.FC<ProductProps> = ({ data }) => {
   const router = useRouter();
 
-  const handleDetailProduct = (productId: string) => {
-    router.push(`/product/default?id=${productId}`);
+  const handleDetailProduct = (data: ProductType) => {
+    router.push(`/product/default?id=${data._id}`);
   };
 
   const percentSale = Math.floor(100 - (data.discountPrice / data.price) * 100);
@@ -20,7 +20,7 @@ const ProductGrid: React.FC<ProductProps> = ({ data }) => {
   return (
     <div className="product-item grid-type">
       <div
-        onClick={() => handleDetailProduct(data._id)}
+        onClick={() => handleDetailProduct(data)}
         className="product-main cursor-pointer block"
       >
         <ProductMedia media={data.images} name={data.productName} />
@@ -48,23 +48,24 @@ interface ProductMediaProps {
 
 const ProductMedia: React.FC<ProductMediaProps> = ({ media, name }) => {
   const hasMedia = media && media.length > 0;
-
   return (
-    <div className="product-thumb bg-white relative overflow-hidden rounded-2xl border border-gray-300">
-      {/* Adding 1px border */}
+    <div
+      className="product-thumb bg-white relative overflow-hidden rounded-2xl border border-gray-300"
+      style={{ backgroundColor: "#00000080" }}
+    >
       <div className="product-img w-full h-full aspect-[3/4]">
         {hasMedia ? (
           media.map((src, index) => (
             <ImgOrVideoRenderer
               key={index}
               src={src}
-              className="w-full h-full object-cover duration-700"
+              className="w-full h-full object-contain duration-700"
               description={name}
             />
           ))
         ) : (
           <div className="w-full h-full bg-gray-200 flex justify-center items-center">
-            <span className="text-gray-500">No media available</span>
+            <span className="text-white">No media available</span>
           </div>
         )}
       </div>

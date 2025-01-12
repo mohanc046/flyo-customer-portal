@@ -18,6 +18,7 @@ interface ProductContextValue {
   products: ProductType[];
   fetchProductsData: () => void;
   updatePayload: (newPayload: Partial<PayloadType>) => void; // Use PayloadType here
+  getProductByID: (id: string) => ProductType | undefined; // Function to get a product by ID
 }
 
 const ProductContext = createContext<ProductContextValue | undefined>(
@@ -59,6 +60,10 @@ export const ProductProvider: React.FC<ProductContextProps> = ({
     setPayload((prev) => ({ ...prev, ...newPayload }));
   };
 
+  const getProductByID = (id: string): ProductType | undefined => {
+    return products.find((product) => product._id === id); // Filter products to find the one with the matching ID
+  };
+
   useEffect(() => {
     fetchProductsData();
   }, [payload]); // Refetch products when payload changes
@@ -67,6 +72,7 @@ export const ProductProvider: React.FC<ProductContextProps> = ({
     products,
     fetchProductsData,
     updatePayload,
+    getProductByID,
   };
 
   return (

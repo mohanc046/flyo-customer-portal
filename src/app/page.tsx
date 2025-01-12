@@ -1,5 +1,4 @@
 import React from 'react'
-import TopNavOne from '@/components/Header/TopNav/TopNavOne'
 import MenuOne from '@/components/Header/Menu/MenuOne'
 import SliderOne from '@/components/Slider/SliderOne'
 import WhatNewOne from '@/components/Home1/WhatNewOne'
@@ -22,13 +21,9 @@ export default function Home() {
       <WhatNewOne  start={0} limit={4} />
       <Collection />
       <TabFeatures data={productData} start={0} limit={6} />
-      {/* <Banner /> */}
       <Benefit props="md:py-20 py-10" />
       <Testimonial data={testimonialData} limit={6} />
-      {/* <Instagram /> */}
-      {/* <Brand /> */}
       <Footer />
-      {/* <ModalNewsletter /> */}
     </>
   )
 }

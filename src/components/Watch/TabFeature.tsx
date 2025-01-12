@@ -1,12 +1,12 @@
 'use client'
 
 import React, { useState } from 'react'
-import Product from '../Product/Product'
 import { ProductType } from '@/type/ProductType'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation } from 'swiper/modules';
 import { motion } from 'framer-motion'
 import 'swiper/css/bundle';
+import ProductGrid from '../Product/Components/ProductGrid';
 
 interface Props {
     data: Array<ProductType>;
@@ -75,8 +75,8 @@ const TabFeature: React.FC<Props> = ({ data, start, limit }) => {
                             className='w-full'
                         >
                             {filteredProducts.slice(start, limit).map((prd) => (
-                                <SwiperSlide key={prd.id}>
-                                    <Product data={prd} type='grid' />
+                                <SwiperSlide key={prd._id}>
+                                    <ProductGrid data={prd} />
                                 </SwiperSlide>
                             ))}
                         </Swiper>
