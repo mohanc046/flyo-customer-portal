@@ -1,59 +1,79 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react'
-import Product from '../Product/Product'
-import { ProductType } from '@/type/ProductType'
-import { motion } from 'framer-motion'
-import ProductGrid from '../Product/Components/ProductGrid'
+import React, { useState, useEffect } from "react";
+import { useProductContext } from "@/context/ProductContext";
+import { useCategoryContext } from "@/context/CategoryContext"; // Import CategoryContext
+import ProductGrid from "../Product/Components/ProductGrid";
+import { motion } from "framer-motion";
 
 interface Props {
-    data: Array<ProductType>;
-    start: number;
-    limit: number;
+  start: number;
+  limit: number;
 }
 
-const WhatNewOne: React.FC<Props> = ({ data, start, limit }) => {
-    const [activeTab, setActiveTab] = useState<string>('t-shirt');
+const WhatNewOne: React.FC<Props> = ({ start, limit }) => {
+  const { products, updatePayload } = useProductContext(); // Access product context
+  const { categoryList, isLoading, error, fetchCategoriesData } =
+    useCategoryContext(); // Access category context
 
-    const handleTabClick = (type: string) => {
-        setActiveTab(type);
-    };
+  const [activeTab, setActiveTab] = useState<string>("");
 
-    const filteredProducts = data.filter((product) => product.type === activeTab && (product.category === 'fashion'));
+  useEffect(() => {
+    if (categoryList.length === 0) {
+      fetchCategoriesData(); // Fetch categories on mount if not already loaded
+    }
+  }, [categoryList, fetchCategoriesData]);
 
-    return (
-        <>
-            <div className="whate-new-block md:pt-20 pt-10">
-                <div className="container">
-                    <div className="heading flex flex-col items-center text-center">
-                        <div className="heading3">What{String.raw`'s`} new</div>
-                        <div className="menu-tab flex items-center gap-2 p-1 bg-surface rounded-2xl mt-6">
-                            {['top', 't-shirt', 'dress', 'sets', 'shirt'].map((type) => (
-                                <div
-                                    key={type}
-                                    className={`tab-item relative text-secondary text-button-uppercase py-2 px-5 cursor-pointer duration-500 hover:text-black ${activeTab === type ? 'active' : ''}`}
-                                    onClick={() => handleTabClick(type)}
-                                >
-                                    {activeTab === type && (
-                                        <motion.div layoutId='active-pill' className='absolute inset-0 rounded-2xl bg-white'></motion.div>
-                                    )}
-                                    <span className='relative text-button-uppercase z-[1]'>
-                                        {type}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+  const handleTabClick = (categoryKey: string) => {
+    setActiveTab(categoryKey);
+    updatePayload({ category: categoryKey }); // Update payload's category with the key
+  };
 
-                    <div className="list-product hide-product-sold grid lg:grid-cols-4 grid-cols-2 sm:gap-[30px] gap-[20px] md:mt-10 mt-6">
-                        {filteredProducts.slice(start, limit).map((prd, index) => (
-                            <ProductGrid data={prd} key={index} />
-                        ))}
-                    </div>
+  const filteredProducts = products.slice(start, limit);
+
+  return (
+    <div className="whate-new-block md:pt-20 pt-10">
+      <div className="container">
+        <div className="heading flex flex-col items-center text-center">
+          <div className="heading3">What&apos;s new</div>
+
+          {isLoading ? (
+            <div>Loading categories...</div>
+          ) : error ? (
+            <div>Error loading categories</div>
+          ) : (
+            <div className="menu-tab flex items-center gap-2 p-1 bg-surface rounded-2xl mt-6">
+              {categoryList.map(({ key, value }) => (
+                <div
+                  key={value}
+                  className={`tab-item relative text-secondary text-button-uppercase py-2 px-5 cursor-pointer duration-500 hover:text-black ${
+                    activeTab === value ? "active" : ""
+                  }`}
+                  onClick={() => handleTabClick(value)} // Use value (category key) for handling the tab click
+                >
+                  {activeTab === value && (
+                    <motion.div
+                      layoutId="active-pill"
+                      className="absolute inset-0 rounded-2xl bg-white"
+                    ></motion.div>
+                  )}
+                  <span className="relative text-button-uppercase z-[1]">
+                    {key} {/* Display the category name */}
+                  </span>
                 </div>
+              ))}
             </div>
-        </>
-    )
-}
+          )}
+        </div>
 
-export default WhatNewOne
+        <div className="list-product hide-product-sold grid lg:grid-cols-4 grid-cols-2 sm:gap-[30px] gap-[20px] md:mt-10 mt-6">
+          {filteredProducts.map((prd, index) => (
+            <ProductGrid data={prd} key={index} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default WhatNewOne;
