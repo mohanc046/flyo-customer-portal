@@ -12,21 +12,21 @@ interface Props {
 }
 
 const WhatNewOne: React.FC<Props> = ({ start, limit }) => {
-  const { products, updatePayload } = useProductContext(); // Access product context
+  const { products, updatePayload } = useProductContext();
   const { categoryList, isLoading, error, fetchCategoriesData } =
-    useCategoryContext(); // Access category context
+    useCategoryContext();
 
   const [activeTab, setActiveTab] = useState<string>("");
 
   useEffect(() => {
     if (categoryList.length === 0) {
-      fetchCategoriesData(); // Fetch categories on mount if not already loaded
+      fetchCategoriesData();
     }
   }, [categoryList, fetchCategoriesData]);
 
   const handleTabClick = (categoryKey: string) => {
     setActiveTab(categoryKey);
-    updatePayload({ category: categoryKey }); // Update payload's category with the key
+    updatePayload({ category: categoryKey });
   };
 
   const filteredProducts = products.slice(start, limit);
@@ -49,7 +49,7 @@ const WhatNewOne: React.FC<Props> = ({ start, limit }) => {
                   className={`tab-item relative text-secondary text-button-uppercase py-2 px-5 cursor-pointer duration-500 hover:text-black ${
                     activeTab === value ? "active" : ""
                   }`}
-                  onClick={() => handleTabClick(value)} // Use value (category key) for handling the tab click
+                  onClick={() => handleTabClick(value)}
                 >
                   {activeTab === value && (
                     <motion.div
@@ -58,7 +58,7 @@ const WhatNewOne: React.FC<Props> = ({ start, limit }) => {
                     ></motion.div>
                   )}
                   <span className="relative text-button-uppercase z-[1]">
-                    {key} {/* Display the category name */}
+                    {key}
                   </span>
                 </div>
               ))}
