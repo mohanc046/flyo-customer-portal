@@ -7,18 +7,29 @@ import React, {
   ReactNode,
   useEffect,
 } from "react";
-import { ProductType } from "@/type/ProductType"; // Assuming ProductType is defined elsewhere
+import { ProductType2 } from "@/type/ProductType"; // Assuming ProductType2 is defined elsewhere
 import { fetchProducts } from "@/utils/api.service"; // Assuming `fetchProducts` is your API function
 
 interface ProductContextProps {
   children: ReactNode;
 }
 
+interface PayloadType {
+  storeName: string;
+  currentPage: number;
+  limit: number;
+  category: string;
+  searchText: string;
+  activeStatusTab: string | null; // If this is nullable
+  sort: number; // Assuming this is either -1 or 1 for sorting direction
+}
+
+
 interface ProductContextValue {
-  products: ProductType[];
+  products: ProductType2[];
   fetchProductsData: () => void;
   updatePayload: (newPayload: Partial<PayloadType>) => void; // Use PayloadType here
-  getProductByID: (id: string) => ProductType | undefined; // Function to get a product by ID
+  getProductByID: (id: string) => ProductType2 | undefined; // Function to get a product by ID
 }
 
 const ProductContext = createContext<ProductContextValue | undefined>(
@@ -36,7 +47,7 @@ export const useProductContext = (): ProductContextValue => {
 export const ProductProvider: React.FC<ProductContextProps> = ({
   children,
 }) => {
-  const [products, setProducts] = useState<ProductType[]>([]);
+  const [products, setProducts] = useState<ProductType2[]>([]);
   const [payload, setPayload] = useState<PayloadType>({
     storeName: "ecommerce",
     currentPage: 1,
@@ -60,7 +71,7 @@ export const ProductProvider: React.FC<ProductContextProps> = ({
     setPayload((prev) => ({ ...prev, ...newPayload }));
   };
 
-  const getProductByID = (id: string): ProductType | undefined => {
+  const getProductByID = (id: string): ProductType2 | undefined => {
     return products.find((product) => product._id === id); // Filter products to find the one with the matching ID
   };
 

@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useProductContext } from "@/context/ProductContext";
 import Image from "next/image";
-import { ProductType } from "@/type/ProductType";
+import { ProductType2, ProductType } from "@/type/ProductType";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Thumbs } from "swiper/modules";
 import "swiper/css/bundle";
@@ -12,22 +12,18 @@ import SwiperCore from "swiper/core";
 import ImgOrVideoRenderer from "@/components/ImgOrVideoRenderer/ImgOrVideoRenderer";
 import Rate from "@/components/Other/Rate";
 import { useWishlist } from "@/context/WishlistContext";
-import { useModalWishlistContext } from "@/context/ModalWishlistContext";
 import Link from "next/link";
 import ProductGrid from "../Components/ProductGrid";
 
 interface Props {
-  data: Array<ProductType>;
   productId: string | number | null;
 }
 
 const Default: React.FC<Props> = ({ productId }) => {
   const { getProductByID } = useProductContext(); // Get product from context
-  const [product, setProduct] = useState<ProductType | null>(null);
+  const [product, setProduct] = useState<ProductType2>();
   const { addToWishlist, removeFromWishlist, wishlistState } = useWishlist();
-  const { openModalWishlist } = useModalWishlistContext();
   const { products, updatePayload } = useProductContext();
-  const [activeColor, setActiveColor] = useState();
 
   const swiperRef: any = useRef();
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperCore | null>(null);
@@ -163,7 +159,7 @@ const Default: React.FC<Props> = ({ productId }) => {
                   // onClick={handleAddToWishlist}
                 >
                   {wishlistState.wishlistArray.some(
-                    (item) => item._id === product._id
+                    (item) => item.id === product._id
                   ) ? (
                     <>
                       <Icon.Heart

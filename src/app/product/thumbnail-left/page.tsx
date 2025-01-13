@@ -25,7 +25,7 @@ const ProductThumbnailLeft = () => {
                 <MenuOne props="bg-white" />
                 <BreadcrumbProduct data={productData} productPage='default' productId={productId} />
             </div>
-            <Default data={productData} productId={productId} />
+            <Default productId={productId} />
             <Footer />
         </>
     )

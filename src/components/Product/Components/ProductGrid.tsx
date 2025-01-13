@@ -2,16 +2,16 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { ProductType } from "@/type/ProductType";
+import { ProductType2 } from "@/type/ProductType";
 import ImgOrVideoRenderer from "../../ImgOrVideoRenderer/ImgOrVideoRenderer";
 interface ProductProps {
-  data: ProductType;
+  data: ProductType2;
 }
 
 const ProductGrid: React.FC<ProductProps> = ({ data }) => {
   const router = useRouter();
 
-  const handleDetailProduct = (data: ProductType) => {
+  const handleDetailProduct = (data: ProductType2) => {
     router.push(`/product/default?id=${data._id}`);
   };
 

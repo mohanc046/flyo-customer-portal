@@ -74,11 +74,11 @@ const TabFeature: React.FC<Props> = ({ data, start, limit }) => {
                             }}
                             className='w-full'
                         >
-                            {filteredProducts.slice(start, limit).map((prd) => (
-                                <SwiperSlide key={prd._id}>
+                            {/* {filteredProducts.slice(start, limit).map((prd) => (
+                                <SwiperSlide key={prd.id}>
                                     <ProductGrid data={prd} />
                                 </SwiperSlide>
-                            ))}
+                            ))} */}
                         </Swiper>
                     </div>
                 </div>

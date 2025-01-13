@@ -13,8 +13,8 @@ interface Props {
 
 const WhatNewOne: React.FC<Props> = ({ start, limit }) => {
   const { products, updatePayload } = useProductContext();
-  const { categoryList, isLoading, error, fetchCategoriesData } =
-    useCategoryContext();
+  const { isLoading, error, fetchCategoriesData } = useCategoryContext();
+  const { categoryList } = useCategoryContext();
 
   const [activeTab, setActiveTab] = useState<string>("");
 
@@ -22,6 +22,7 @@ const WhatNewOne: React.FC<Props> = ({ start, limit }) => {
     if (categoryList.length === 0) {
       fetchCategoriesData();
     }
+    console.log(categoryList); // Debugging step
   }, [categoryList, fetchCategoriesData]);
 
   const handleTabClick = (categoryKey: string) => {
@@ -43,25 +44,31 @@ const WhatNewOne: React.FC<Props> = ({ start, limit }) => {
             <div>Error loading categories</div>
           ) : (
             <div className="menu-tab flex items-center gap-2 p-1 bg-surface rounded-2xl mt-6">
-              {categoryList.map(({ key, value }) => (
-                <div
-                  key={value}
-                  className={`tab-item relative text-secondary text-button-uppercase py-2 px-5 cursor-pointer duration-500 hover:text-black ${
-                    activeTab === value ? "active" : ""
-                  }`}
-                  onClick={() => handleTabClick(value)}
-                >
-                  {activeTab === value && (
-                    <motion.div
-                      layoutId="active-pill"
-                      className="absolute inset-0 rounded-2xl bg-white"
-                    ></motion.div>
-                  )}
-                  <span className="relative text-button-uppercase z-[1]">
-                    {key}
-                  </span>
-                </div>
-              ))}
+              {categoryList &&
+                categoryList.map((category) => {
+                  const categoryKey = category.key; // Use `key` property safely
+                  const categoryValue = category.value; // Use `value` property safely
+
+                  return (
+                    <div
+                      key={categoryValue}
+                      className={`tab-item relative text-secondary text-button-uppercase py-2 px-5 cursor-pointer duration-500 hover:text-black ${
+                        activeTab === categoryValue ? "active" : ""
+                      }`}
+                      onClick={() => handleTabClick(categoryValue)}
+                    >
+                      {activeTab === categoryValue && (
+                        <motion.div
+                          layoutId="active-pill"
+                          className="absolute inset-0 rounded-2xl bg-white"
+                        ></motion.div>
+                      )}
+                      <span className="relative text-button-uppercase z-[1]">
+                        {categoryKey}
+                      </span>
+                    </div>
+                  );
+                })}
             </div>
           )}
         </div>
