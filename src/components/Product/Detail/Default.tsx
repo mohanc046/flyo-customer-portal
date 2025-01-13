@@ -110,7 +110,7 @@ const Default: React.FC<Props> = ({ productId }) => {
                   </SwiperSlide>
                 ))}
               </Swiper> */}
-              <Swiper
+              {/* <Swiper
                 onSwiper={(swiper) => {
                   handleSwiper(swiper);
                 }}
@@ -138,7 +138,7 @@ const Default: React.FC<Props> = ({ productId }) => {
                       />
                     </SwiperSlide>
                   ))}
-              </Swiper>
+              </Swiper> */}
             </div>
             <div className="product-infor md:w-1/2 w-full lg:pl-[15px] md:pl-2">
               <div className="flex justify-between">

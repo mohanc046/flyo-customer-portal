@@ -50,7 +50,7 @@ const Collection = () => {
                 >
                   <div
                     className="product-img w-full h-full aspect-[3/4]"
-                    style={{ backgroundColor: "#000" }}
+                    style={{ backgroundColor: "#00000080" }}
                   >
                     {product.images[0] ? (
                       <ImgOrVideoRenderer
