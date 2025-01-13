@@ -49,7 +49,7 @@ export const ProductProvider: React.FC<ProductContextProps> = ({
 }) => {
   const [products, setProducts] = useState<ProductType2[]>([]);
   const [payload, setPayload] = useState<PayloadType>({
-    storeName: "ecommerce",
+    storeName: "decathlon",
     currentPage: 1,
     limit: 10,
     category: "",

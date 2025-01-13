@@ -43,7 +43,8 @@ const Collection = () => {
             className="h-full"
           >
             {products.map((product) => (
-              <SwiperSlide key={product._id}>
+              product.images[0] &&
+              (<SwiperSlide key={product._id}>
                 <div
                   className="collection-item block relative rounded-2xl overflow-hidden cursor-pointer"
                   onClick={() => handleProductClick(product._id)}
@@ -52,20 +53,14 @@ const Collection = () => {
                     className="product-img w-full h-full aspect-[3/4]"
                     style={{ backgroundColor: "#00000080" }}
                   >
-                    {product.images[0] ? (
-                      <ImgOrVideoRenderer
-                        src={product.images[0]}
-                        className="w-full h-full object-contain duration-700"
-                        description={name}
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gray-200 flex justify-center items-center">
-                        <span className="text-white">No media available</span>
-                      </div>
-                    )}
+                    <ImgOrVideoRenderer
+                      src={product.images[0]}
+                      className="w-full h-full object-contain duration-700"
+                      description={name}
+                    />
                   </div>
                 </div>
-              </SwiperSlide>
+              </SwiperSlide>)
             ))}
           </Swiper>
         </div>
