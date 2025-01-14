@@ -40,4 +40,5 @@ export interface ProductType2 {
     colors: string[] | [];
     sizes: string[] | [];
   };
+  quantityPurchase: number | 0;
 }

@@ -14,6 +14,8 @@ import Rate from "@/components/Other/Rate";
 import { useWishlist } from "@/context/WishlistContext";
 import Link from "next/link";
 import ProductGrid from "../Components/ProductGrid";
+import { useCart } from "@/context/CartContext";
+import { useModalCartContext } from "@/context/ModalCartContext";
 
 interface Props {
   productId: string | number | null;
@@ -23,6 +25,10 @@ const Default: React.FC<Props> = ({ productId }) => {
   const { getProductByID } = useProductContext(); // Get product from context
   const [product, setProduct] = useState<ProductType2>();
   const { addToWishlist, removeFromWishlist, wishlistState } = useWishlist();
+  const { addToCart, updateCart, cartState } = useCart();
+  const { openModalCart } = useModalCartContext();
+  const [activeColor, setActiveColor] = useState<string>("red");
+  const [activeSize, setActiveSize] = useState<string>("XL");
   const { products, updatePayload } = useProductContext();
 
   const swiperRef: any = useRef();
@@ -53,6 +59,26 @@ const Default: React.FC<Props> = ({ productId }) => {
   //   }
   //   openModalWishlist();
   // };
+
+  const handleAddToCart = () => {
+    if (!cartState.cartArray.find((item) => item._id === product._id)) {
+      addToCart({ ...product });
+      updateCart(
+        product._id,
+        product.quantityPurchase,
+        activeSize,
+        activeColor
+      );
+    } else {
+      updateCart(
+        product._id,
+        product.quantityPurchase,
+        activeSize,
+        activeColor
+      );
+    }
+    openModalCart();
+  };
 
   return (
     <>
@@ -268,7 +294,10 @@ const Default: React.FC<Props> = ({ productId }) => {
                 </div> */}
 
                 <div className="button-block mt-5">
-                  <div className="button-main w-full text-center">
+                  <div
+                    onClick={handleAddToCart}
+                    className="button-main w-full text-center"
+                  >
                     Buy It Now
                   </div>
                 </div>
