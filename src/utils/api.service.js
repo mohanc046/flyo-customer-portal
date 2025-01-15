@@ -42,6 +42,25 @@ export const fetchCategoryList = async () => {
   }
 };
 
+export const getStripePublishableKey = async () => {
+  try {
+    const response = await axios.get(
+      `${getServiceURL()}/configuration/stripe`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDI2NDI2ODE0MDc3Mjc4MzcwMzQiLCJpYXQiOjE3MzY4NzgzNDV9.AY3hPGMEY5qr5GwAujJ8jwT8_yxGf750HebMgijdWVo"}`,
+          //Authorization: `Bearer ${getAuthToken()}`,
+        },
+      }
+    );
+    return response.data; // Assuming the response returns categories directly
+  } catch (error) {
+    console.error("Error fetching publishable key:", error);
+    throw error; // Throwing error to handle it in the provider
+  }
+};
+
 export const fetchPlacedOrders = async (storeName) => {
   const response = await axios.get(
     `${getServiceURL()}/order/userCart/${storeName}`,
@@ -55,12 +74,18 @@ export const fetchPlacedOrders = async (storeName) => {
   return response.data;
 };
 
-export const createOrder = async (addressInfo, totalOrderCost) => {
+export const createOrder = async (addressInfo, totalOrderCost, products) => {
   const URL = getServiceURL();
+  const authToken = getAuthToken(); // Replace this with your actual token retrieval logic
   try {
     const response = await axios.post(
       `${URL}/order/create`,
-      { addressInfo, totalOrderCost },
+      {
+        products,
+        storeId: "656369f226e6cd24417a22f9",
+        addressInfo,
+        totalOrderCost,
+      },
       {
         headers: {
           "Content-Type": "application/json",
@@ -71,7 +96,10 @@ export const createOrder = async (addressInfo, totalOrderCost) => {
     );
     return response.data; // Return the response data
   } catch (error) {
-    console.error("Error creating order:", error);
+    console.error(
+      "Error creating order:",
+      error.response?.data || error.message
+    );
     throw error; // Rethrow the error for the caller to handle
   }
 };

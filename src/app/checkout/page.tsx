@@ -14,100 +14,7 @@ import {
   useElements,
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { getServiceURL } from "@/utils/utils";
-import axios from "axios";
-import { createOrder } from "@/utils/api.service";
-
-const stripePromise = loadStripe("your-stripe-publishable-key");
-
-// const Checkout = () => {
-//   const stripe = useStripe();
-//   const elements = useElements();
-
-//   const searchParams = useSearchParams();
-//   let discount = searchParams.get("discount");
-//   let ship = searchParams.get("ship");
-//   const [shippingAddress, setShippingAddress] = useState({
-//     doorNo: "",
-//     address1: "",
-//     address2: "",
-//     pinCode: "",
-//   });
-
-//   const { cartState } = useCart();
-//   let [totalCart, setTotalCart] = useState<number>(0);
-//   const [activePayment, setActivePayment] = useState<string>("stripe");
-
-//   cartState.cartArray.map((item) => (totalCart += item.price * item.quantity));
-
-//   const handlePayment = (item: string) => {
-//     setActivePayment(item);
-//   };
-
-//   const handleChange = (e: string) => {
-//     const { id, value } = e.target;
-//     setShippingAddress((prevData) => ({
-//       ...prevData,
-//       [id]: value,
-//     }));
-//   };
-
-//   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-//     event.preventDefault();
-
-//     if (!stripe || !elements) {
-//       console.error("Stripe has not loaded yet.");
-//       return;
-//     }
-
-//     try {
-//       // Trigger form validation in Stripe elements
-//       const validation = await elements.submit();
-//       if (validation.error) {
-//         console.error(validation.error.message);
-//         return;
-//       }
-
-//       // Example: Replace this with how you retrieve your token
-//       const token = localStorage.getItem("authToken");
-
-//       // Call the reusable API function
-//       const { client_secret: clientSecret } = await createOrder(
-//         shippingAddress,
-//         totalCart - discount + ship,
-//       );
-
-//       const { error } = await stripe.confirmPayment({
-//         elements,
-//         clientSecret,
-//         confirmParams: {
-//           return_url: `${window.location.origin}/payment/success`,
-//         },
-//       });
-
-//       if (error) {
-//         console.error("Payment error:", error.message);
-//       }
-//     } catch (error) {
-//       console.error("Error submitting payment:", error);
-//     }
-//   };
-
-//   return (
-//     <>
-//       <TopNavOne
-//         props="style-one bg-black"
-//         slogan="New customers save 10% with the code GET10"
-//       />
-//       <div id="header" className="relative w-full">
-//         <MenuOne props="bg-transparent" />
-//         <Breadcrumb heading="Shopping cart" subHeading="Shopping cart" />
-//       </div>
-
-//       <Footer />
-//     </>
-//   );
-// };
+import { createOrder, getStripePublishableKey } from "@/utils/api.service";
 
 const CheckoutForm = () => {
   const stripe = useStripe();
@@ -119,9 +26,9 @@ const CheckoutForm = () => {
   const ship = Number(searchParams.get("ship") || 0);
   const [shippingAddress, setShippingAddress] = useState({
     doorNo: "",
-    address1: "",
-    address2: "",
+    street: "",
     pinCode: "",
+    state: "",
   });
 
   const [activePayment, setActivePayment] = useState<string>("stripe");
@@ -159,19 +66,21 @@ const CheckoutForm = () => {
       // Trigger form validation in Stripe elements
       const validation = await elements.submit();
       if (validation.error) {
-        console.error(validation.error.message);
+        console.error("Validation error:", validation.error.message);
         return;
       }
 
-      // Example: Replace this with how you retrieve your token
-      const token = localStorage.getItem("authToken");
+      // Extract products from cartState
+      const products = cartState.cartArray;
 
-      // Call the reusable API function
+      // Create the order
       const { client_secret: clientSecret } = await createOrder(
         shippingAddress,
         totalCart - discount + ship,
+        products
       );
 
+      // Confirm payment using Stripe
       const { error } = await stripe.confirmPayment({
         elements,
         clientSecret,
@@ -182,11 +91,18 @@ const CheckoutForm = () => {
 
       if (error) {
         console.error("Payment error:", error.message);
+      } else {
+        console.log("Payment successful");
+        // Redirect to a success page or handle success here
       }
-    } catch (error) {
-      console.error("Error submitting payment:", error);
+    } catch (error: any) {
+      console.error(
+        "Error submitting payment:",
+        error.response?.data || error.message
+      );
     }
   };
+
   return (
     <div className="cart-block md:py-20 py-10">
       <div className="container">
@@ -211,10 +127,10 @@ const CheckoutForm = () => {
                     <div>
                       <input
                         className="border-line px-4 py-3 w-full rounded-lg"
-                        id="address1"
+                        id="street"
                         type="text"
                         placeholder="Address 1 (street) *"
-                        value={shippingAddress.address1}
+                        value={shippingAddress.street}
                         onChange={handleChange}
                         required
                       />
@@ -222,10 +138,10 @@ const CheckoutForm = () => {
                     <div>
                       <input
                         className="border-line px-4 py-3 w-full rounded-lg"
-                        id="address2"
+                        id="state"
                         type="text"
                         placeholder="Address 1 (city and state) *"
-                        value={shippingAddress.address2}
+                        value={shippingAddress.state}
                         onChange={handleChange}
                         required
                       />
@@ -350,25 +266,53 @@ const CheckoutForm = () => {
   );
 };
 
-const Checkout = () => (
-  <>
-    <TopNavOne
-      props="style-one bg-black"
-      slogan="New customers save 10% with the code GET10"
-    />
-    <div id="header" className="relative w-full">
-      <MenuOne props="bg-transparent" />
-      <Breadcrumb heading="Shopping cart" subHeading="Shopping cart" />
-    </div>
-    <div className="cart-block md:py-20 py-10">
-      <div className="container">
-        <Elements stripe={stripePromise}>
-          <CheckoutForm />
-        </Elements>
+const Checkout = () => {
+  const [stripePromise, setStripePromise] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchKeyAndInitializeStripe = async () => {
+      try {
+        const stripeKey = await fetchStripeKey();
+        const stripe = loadStripe(stripeKey);
+        setStripePromise(stripe);
+      } catch (error) {
+        console.error("Error initializing Stripe:", error);
+      }
+    };
+
+    fetchKeyAndInitializeStripe();
+  }, []);
+
+  const fetchStripeKey = async () => {
+    try {
+      const response = await getStripePublishableKey();
+      return response.configuration.publishableKey;
+    } catch (error) {
+      console.error("Error fetching Stripe publishable key:", error);
+      throw error;
+    }
+  };
+
+  return (
+    <>
+      <TopNavOne
+        props="style-one bg-black"
+        slogan="New customers save 10% with the code GET10"
+      />
+      <div id="header" className="relative w-full">
+        <MenuOne props="bg-transparent" />
+        <Breadcrumb heading="Shopping cart" subHeading="Shopping cart" />
       </div>
-    </div>
-    <Footer />
-  </>
-);
+      <div className="cart-block md:py-20 py-10">
+        <div className="container">
+          <Elements stripe={stripePromise}>
+            <CheckoutForm />
+          </Elements>
+        </div>
+      </div>
+      <Footer />
+    </>
+  );
+};
 
 export default Checkout;
