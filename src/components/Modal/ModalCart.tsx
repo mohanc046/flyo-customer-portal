@@ -117,26 +117,19 @@ const ModalCart = ({
               </div>
               <div className="block-button text-center p-6">
                 <div className="flex items-center gap-4">
+                  <div
+                    className="button-main basis-1/2 bg-white border border-black text-black text-center uppercase"
+                    onClick={closeModalCart}
+                  >
+                    Or continue shopping
+                  </div>
                   <Link
                     href={"/cart"}
-                    className="button-main basis-1/2 bg-white border border-black text-black text-center uppercase"
+                    className="button-main basis-1/2 text-center uppercase"
                     onClick={closeModalCart}
                   >
                     View cart
                   </Link>
-                  <Link
-                    href={"/checkout"}
-                    className="button-main basis-1/2 text-center uppercase"
-                    onClick={closeModalCart}
-                  >
-                    Check Out
-                  </Link>
-                </div>
-                <div
-                  onClick={closeModalCart}
-                  className="text-button-uppercase mt-4 text-center has-line-before cursor-pointer inline-block"
-                >
-                  Or continue shopping
                 </div>
               </div>
             </div>

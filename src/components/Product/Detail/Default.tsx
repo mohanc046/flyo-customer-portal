@@ -65,14 +65,14 @@ const Default: React.FC<Props> = ({ productId }) => {
       addToCart({ ...product });
       updateCart(
         product._id,
-        product.quantityPurchase,
+        1,
         activeSize,
         activeColor
       );
     } else {
       updateCart(
         product._id,
-        product.quantityPurchase,
+        1,
         activeSize,
         activeColor
       );

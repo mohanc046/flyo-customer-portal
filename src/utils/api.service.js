@@ -55,17 +55,23 @@ export const fetchPlacedOrders = async (storeName) => {
   return response.data;
 };
 
-// export const getCustomersByUserId = async ({
-//   storeName,
-//   limit = 10,
-//   page = 1,
-//   category = "",
-//   searchText = "",
-//   sort = -1
-// }) => {
-//   // &category=${category}&searchText=${searchText}&sort=${sort}
-//   const response = await axios.get(
-//     `${getServiceURL()}/order/getCustomersByUserId/${storeName}/?limit=${limit}&page=${page}&category=${category}&searchText=${searchText}&sort=${sort}`
-//   );
-//   return response.data;
-// };
+export const createOrder = async (addressInfo, totalOrderCost) => {
+  const URL = getServiceURL();
+  try {
+    const response = await axios.post(
+      `${URL}/order/create`,
+      { addressInfo, totalOrderCost },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDI2NDI2ODE0MDc3Mjc4MzcwMzQiLCJpYXQiOjE3MzY4NzgzNDV9.AY3hPGMEY5qr5GwAujJ8jwT8_yxGf750HebMgijdWVo"}`,
+          //Authorization: `Bearer ${getAuthToken()}`,
+        },
+      }
+    );
+    return response.data; // Return the response data
+  } catch (error) {
+    console.error("Error creating order:", error);
+    throw error; // Rethrow the error for the caller to handle
+  }
+};

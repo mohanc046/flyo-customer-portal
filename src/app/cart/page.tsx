@@ -92,53 +92,6 @@ const Cart = () => {
         <div className="container">
           <div className="content-main flex justify-between max-xl:flex-col gap-y-8">
             <div className="xl:w-2/3 xl:pr-3 w-full">
-              <div className="time bg-green py-3 px-5 flex items-center rounded-lg">
-                <div className="heding5">🔥</div>
-                <div className="caption1 pl-2">
-                  Your cart will expire in
-                  <span className="min text-red text-button fw-700">
-                    {" "}
-                    {timeLeft.minutes}:
-                    {timeLeft.seconds < 10
-                      ? `0${timeLeft.seconds}`
-                      : timeLeft.seconds}
-                  </span>
-                  <span>
-                    {" "}
-                    minutes! Please checkout now before your items sell out!
-                  </span>
-                </div>
-              </div>
-              <div className="heading banner mt-5">
-                <div className="text">
-                  Buy
-                  <span className="text-button">
-                    {" "}
-                    $
-                    <span className="more-price">
-                      {moneyForFreeship - totalCart > 0 ? (
-                        <>{moneyForFreeship - totalCart}</>
-                      ) : (
-                        0
-                      )}
-                    </span>
-                    .00{" "}
-                  </span>
-                  <span>more to get </span>
-                  <span className="text-button">freeship</span>
-                </div>
-                <div className="tow-bar-block mt-4">
-                  <div
-                    className="progress-line"
-                    style={{
-                      width:
-                        totalCart <= moneyForFreeship
-                          ? `${(totalCart / moneyForFreeship) * 100}%`
-                          : `100%`,
-                    }}
-                  ></div>
-                </div>
-              </div>
               <div className="list-product w-full sm:mt-7 mt-5">
                 <div className="w-full">
                   <div className="heading bg-surface bora-4 pt-4 pb-4">
@@ -253,95 +206,6 @@ const Cart = () => {
                   </button>
                 </form>
               </div>
-              <div className="list-voucher flex items-center gap-5 flex-wrap sm:mt-7 mt-5">
-                <div
-                  className={`item ${
-                    applyCode === 200 ? "bg-green" : ""
-                  } border border-line rounded-lg py-2`}
-                >
-                  <div className="top flex gap-10 justify-between px-3 pb-2 border-b border-dashed border-line">
-                    <div className="left">
-                      <div className="caption1">Discount</div>
-                      <div className="caption1 font-bold">10% OFF</div>
-                    </div>
-                    <div className="right">
-                      <div className="caption1">
-                        For all orders <br />
-                        from 200$
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bottom gap-6 items-center flex justify-between px-3 pt-2">
-                    <div className="text-button-uppercase">Code: AN6810</div>
-                    <div
-                      className="button-main py-1 px-2.5 capitalize text-xs"
-                      onClick={() =>
-                        handleApplyCode(200, Math.floor((totalCart / 100) * 10))
-                      }
-                    >
-                      {applyCode === 200 ? "Applied" : "Apply Code"}
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className={`item ${
-                    applyCode === 300 ? "bg-green" : ""
-                  } border border-line rounded-lg py-2`}
-                >
-                  <div className="top flex gap-10 justify-between px-3 pb-2 border-b border-dashed border-line">
-                    <div className="left">
-                      <div className="caption1">Discount</div>
-                      <div className="caption1 font-bold">15% OFF</div>
-                    </div>
-                    <div className="right">
-                      <div className="caption1">
-                        For all orders <br />
-                        from 300$
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bottom gap-6 items-center flex justify-between px-3 pt-2">
-                    <div className="text-button-uppercase">Code: AN6810</div>
-                    <div
-                      className="button-main py-1 px-2.5 capitalize text-xs"
-                      onClick={() =>
-                        handleApplyCode(300, Math.floor((totalCart / 100) * 15))
-                      }
-                    >
-                      {applyCode === 300 ? "Applied" : "Apply Code"}
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className={`item ${
-                    applyCode === 400 ? "bg-green" : ""
-                  } border border-line rounded-lg py-2`}
-                >
-                  <div className="top flex gap-10 justify-between px-3 pb-2 border-b border-dashed border-line">
-                    <div className="left">
-                      <div className="caption1">Discount</div>
-                      <div className="caption1 font-bold">20% OFF</div>
-                    </div>
-                    <div className="right">
-                      <div className="caption1">
-                        For all orders <br />
-                        from 400$
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bottom gap-6 items-center flex justify-between px-3 pt-2">
-                    <div className="text-button-uppercase">Code: AN6810</div>
-                    <div
-                      className="button-main py-1 px-2.5 capitalize text-xs"
-                      onClick={() =>
-                        handleApplyCode(400, Math.floor((totalCart / 100) * 20))
-                      }
-                    >
-                      {applyCode === 400 ? "Applied" : "Apply Code"}
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
             <div className="xl:w-1/3 xl:pl-12 w-full">
               <div className="checkout-block bg-surface p-6 rounded-2xl">
@@ -448,12 +312,6 @@ const Cart = () => {
                   >
                     Process To Checkout
                   </div>
-                  <Link
-                    className="text-button hover-underline"
-                    href={"/shop/breadcrumb1"}
-                  >
-                    Continue shopping
-                  </Link>
                 </div>
               </div>
             </div>
