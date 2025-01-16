@@ -9,6 +9,7 @@ import ModalQuickview from "@/components/Modal/ModalQuickview";
 import ModalCompare from "@/components/Modal/ModalCompare";
 import CountdownTimeType from "@/type/CountdownType";
 import { countdownTime } from "@/store/countdownTime";
+import DynamicTitle from "./DynamicTitle";
 
 const serverTimeLeft: CountdownTimeType = countdownTime();
 
@@ -28,6 +29,8 @@ export default function RootLayout({
     <GlobalProvider>
       <html lang="en">
         <body className={instrument.className}>
+          {/* Add the client-side component for dynamic title */}
+          <DynamicTitle />
           {children}
           <ModalCart serverTimeLeft={serverTimeLeft} />
           <ModalWishlist />

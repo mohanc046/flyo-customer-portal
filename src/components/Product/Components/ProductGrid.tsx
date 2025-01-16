@@ -60,7 +60,7 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ media, name }) => {
             <ImgOrVideoRenderer
               key={index}
               src={src}
-              className="w-full h-full object-contain duration-700"
+              className="w-full h-full object-cover duration-700"
               description={name}
             />
           ))

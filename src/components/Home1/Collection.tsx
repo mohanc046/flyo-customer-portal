@@ -42,26 +42,28 @@ const Collection = () => {
             }}
             className="h-full"
           >
-            {products.map((product) => (
-              product.images[0] &&
-              (<SwiperSlide key={product._id}>
-                <div
-                  className="collection-item block relative rounded-2xl overflow-hidden cursor-pointer"
-                  onClick={() => handleProductClick(product._id)}
-                >
-                  <div
-                    className="product-img w-full h-full aspect-[3/4]"
-                    style={{ backgroundColor: "#00000080" }}
-                  >
-                    <ImgOrVideoRenderer
-                      src={product.images[0]}
-                      className="w-full h-full object-contain duration-700"
-                      description={name}
-                    />
-                  </div>
-                </div>
-              </SwiperSlide>)
-            ))}
+            {products.map(
+              (product) =>
+                product.images[0] && (
+                  <SwiperSlide key={product._id}>
+                    <div
+                      className="collection-item block relative rounded-2xl overflow-hidden cursor-pointer border border-gray-300"
+                      onClick={() => handleProductClick(product._id)}
+                    >
+                      <div
+                        className="product-img w-full h-full aspect-[3/4]"
+                        style={{ backgroundColor: "#00000080" }}
+                      >
+                        <ImgOrVideoRenderer
+                          src={product.images[0]}
+                          className="w-full h-full object-cover duration-700"
+                          description={name}
+                        />
+                      </div>
+                    </div>
+                  </SwiperSlide>
+                )
+            )}
           </Swiper>
         </div>
       </div>
