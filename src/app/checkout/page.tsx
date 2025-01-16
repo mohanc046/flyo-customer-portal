@@ -16,13 +16,16 @@ import {
 import { loadStripe } from "@stripe/stripe-js";
 import { createOrder, getStripePublishableKey } from "@/utils/api.service";
 import { useStore } from "@/context/StoreContext";
+import { useRouter } from "next/router";
+import { Spinner } from "@phosphor-icons/react";
 
 const CheckoutForm = ({ setClientSceret }) => {
   const stripe = useStripe();
   const elements = useElements();
   const searchParams = useSearchParams();
-  const { cartState } = useCart();
+  const { cartState, setLoading } = useCart();
   const { storeData } = useStore();
+  // const router = useRouter();
 
   const discount = Number(searchParams.get("discount") || 0);
   const ship = Number(searchParams.get("ship") || 0);
@@ -65,9 +68,11 @@ const CheckoutForm = ({ setClientSceret }) => {
     }
 
     try {
+      setLoading(true);
       // Trigger form validation in Stripe elements
       const validation = await elements.submit();
       if (validation.error) {
+        setLoading(false);
         console.error("Validation error:", validation.error.message);
         return;
       }
@@ -90,22 +95,26 @@ const CheckoutForm = ({ setClientSceret }) => {
         elements,
         clientSecret: client_secret,
         confirmParams: {
-          return_url: `${window.location.origin}/payment/success`,
+          return_url: `${window.location.origin}/?store=${storeData?.store?.businessName}`,
         },
       });
+      setLoading(false);
 
       if (error) {
         console.error("Payment error:", error.message);
       } else {
         console.log("Payment successful");
-
-        // Redirect to a success page or handle success here
+        // router.push(
+        //   `${window.location.origin}/?store=${storeData?.store?.businessName}`
+        // );
       }
     } catch (error: any) {
       console.error(
         "Error submitting payment:",
         error.response?.data || error.message
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -189,9 +198,23 @@ const CheckoutForm = ({ setClientSceret }) => {
                       </div>
                     </div>
                   </div>
-                  <div className="block-button md:mt-10 mt-6">
-                    <button type="submit" className="button-main2 w-full">
-                      Payment
+                  <div
+                    className={`block-button md:mt-10 mt-6 ${
+                      cartState.isLoading
+                        ? "opacity-50 pointer-events-none"
+                        : ""
+                    }`}
+                  >
+                    <button
+                      type="submit"
+                      className={`button-main2 w-full flex items-center justify-center`}
+                      disabled={cartState.isLoading} // Disable button during loading
+                    >
+                      {cartState.isLoading ? (
+                        <Spinner className="spinner" />
+                      ) : (
+                        "Payment"
+                      )}
                     </button>
                   </div>
                 </form>

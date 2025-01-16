@@ -267,6 +267,11 @@ textarea:focus {
       color: var(--white);
     }
   }
+
+  &.opacity-50 {
+    opacity: 0.5;
+    pointer-events: none; /* Disable interaction when button is disabled */
+  }
 }
 
 /* Optional: Add a specific reset for submit buttons in case */
@@ -284,6 +289,26 @@ button[type="submit"].button-main2 {
   cursor: pointer;
   transition: all ease 0.4s;
 }
+
+/* Spinner Style */
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Spinner Animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 
 @media (max-width: 1023.99px) {
   .text-sub-display {

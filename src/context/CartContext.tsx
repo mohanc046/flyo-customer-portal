@@ -1,13 +1,7 @@
 "use client";
 
 // CartContext.tsx
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useReducer,
-  useEffect,
-} from "react";
+import React, { createContext, useContext, useReducer, useEffect } from "react";
 import { ProductType2 } from "@/type/ProductType";
 
 interface CartItem extends ProductType2 {
@@ -18,6 +12,7 @@ interface CartItem extends ProductType2 {
 
 interface CartState {
   cartArray: CartItem[];
+  isLoading: boolean;
 }
 
 type CartAction =
@@ -32,7 +27,8 @@ type CartAction =
         selectedColor: string;
       };
     }
-  | { type: "LOAD_CART"; payload: CartItem[] };
+  | { type: "LOAD_CART"; payload: CartItem[] }
+  | { type: "SET_LOADING"; payload: boolean };
 
 interface CartContextProps {
   cartState: CartState;
@@ -44,6 +40,7 @@ interface CartContextProps {
     selectedSize: string,
     selectedColor: string
   ) => void;
+  setLoading: (isLoading: boolean) => void;
 }
 
 const CartContext = createContext<CartContextProps | undefined>(undefined);
@@ -64,7 +61,9 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
     case "REMOVE_FROM_CART":
       return {
         ...state,
-        cartArray: state.cartArray.filter((item) => item._id !== action.payload),
+        cartArray: state.cartArray.filter(
+          (item) => item._id !== action.payload
+        ),
       };
     case "UPDATE_CART":
       return {
@@ -85,6 +84,11 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
         ...state,
         cartArray: action.payload,
       };
+    case "SET_LOADING":
+      return {
+        ...state,
+        isLoading: action.payload,
+      };
     default:
       return state;
   }
@@ -93,7 +97,10 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [cartState, dispatch] = useReducer(cartReducer, { cartArray: [] });
+  const [cartState, dispatch] = useReducer(cartReducer, {
+    cartArray: [],
+    isLoading: false,
+  });
 
   const addToCart = (item: ProductType2) => {
     dispatch({ type: "ADD_TO_CART", payload: item });
@@ -115,9 +122,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   };
 
+  const setLoading = (isLoading: boolean) => {
+    dispatch({ type: "SET_LOADING", payload: isLoading });
+  };
+
   return (
     <CartContext.Provider
-      value={{ cartState, addToCart, removeFromCart, updateCart }}
+      value={{ cartState, addToCart, removeFromCart, updateCart, setLoading }}
     >
       {children}
     </CartContext.Provider>
