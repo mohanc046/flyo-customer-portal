@@ -24,7 +24,6 @@ interface PayloadType {
   sort: number; // Assuming this is either -1 or 1 for sorting direction
 }
 
-
 interface ProductContextValue {
   products: ProductType2[];
   fetchProductsData: () => void;
@@ -49,7 +48,7 @@ export const ProductProvider: React.FC<ProductContextProps> = ({
 }) => {
   const [products, setProducts] = useState<ProductType2[]>([]);
   const [payload, setPayload] = useState<PayloadType>({
-    storeName: "decathlon",
+    storeName: "",
     currentPage: 1,
     limit: 10,
     category: "",

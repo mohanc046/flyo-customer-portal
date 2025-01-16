@@ -16,7 +16,7 @@ import {
 import { loadStripe } from "@stripe/stripe-js";
 import { createOrder, getStripePublishableKey } from "@/utils/api.service";
 
-const CheckoutForm = () => {
+const CheckoutForm = ({ setClientSceret }) => {
   const stripe = useStripe();
   const elements = useElements();
   const searchParams = useSearchParams();
@@ -74,16 +74,17 @@ const CheckoutForm = () => {
       const products = cartState.cartArray;
 
       // Create the order
-      const { client_secret: clientSecret } = await createOrder(
+      const { client_secret } = await createOrder(
         shippingAddress,
         totalCart - discount + ship,
         products
       );
+      setClientSceret(client_secret);
 
       // Confirm payment using Stripe
       const { error } = await stripe.confirmPayment({
         elements,
-        clientSecret,
+        clientSecret: client_secret,
         confirmParams: {
           return_url: `${window.location.origin}/payment/success`,
         },
@@ -93,6 +94,7 @@ const CheckoutForm = () => {
         console.error("Payment error:", error.message);
       } else {
         console.log("Payment successful");
+
         // Redirect to a success page or handle success here
       }
     } catch (error: any) {
@@ -268,6 +270,7 @@ const CheckoutForm = () => {
 
 const Checkout = () => {
   const [stripePromise, setStripePromise] = useState<any>(null);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchKeyAndInitializeStripe = async () => {
@@ -305,8 +308,11 @@ const Checkout = () => {
       </div>
       <div className="cart-block md:py-20 py-10">
         <div className="container">
-          <Elements stripe={stripePromise}>
-            <CheckoutForm />
+          <Elements
+            stripe={stripePromise}
+            options={{ clientSecret: clientSecret || "" }}
+          >
+            <CheckoutForm setClientSceret={setClientSecret} />
           </Elements>
         </div>
       </div>

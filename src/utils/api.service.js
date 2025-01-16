@@ -2,6 +2,16 @@ import axios from "axios";
 import { getServiceURL } from "./utils";
 import { getAuthToken } from "./_hooks";
 
+export const fetchStoreInfo = async (storeName) => {
+  try {
+    const response = await axios.get(`${getServiceURL()}/store/${storeName}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching store info:", error);
+    throw error;
+  }
+};
+
 export const fetchProducts = async ({
   storeName,
   limit = 10,
@@ -74,6 +84,24 @@ export const fetchPlacedOrders = async (storeName) => {
   return response.data;
 };
 
+export const fetchBanners = async (storeName) => {
+  const response = await fetch(
+    `${getServiceURL()}/store/fetchStoreByBusinessName`,
+    {
+      method: "POST",
+      headers: {
+        // Authorization: `Bearer ${getAuthToken()}`,
+        Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDI2NDI2ODE0MDc3Mjc4MzcwMzQiLCJpYXQiOjE3MzY4NzgzNDV9.AY3hPGMEY5qr5GwAujJ8jwT8_yxGf750HebMgijdWVo"}`,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        businessName: storeName,
+      }),
+    }
+  );
+  return response.data;
+};
+
 export const createOrder = async (addressInfo, totalOrderCost, products) => {
   const URL = getServiceURL();
   const authToken = getAuthToken(); // Replace this with your actual token retrieval logic
@@ -82,7 +110,7 @@ export const createOrder = async (addressInfo, totalOrderCost, products) => {
       `${URL}/order/create`,
       {
         products,
-        storeId: "656369f226e6cd24417a22f9",
+        storeId: "6788d36562216381aef8b233",
         addressInfo,
         totalOrderCost,
       },

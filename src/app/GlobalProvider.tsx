@@ -9,6 +9,7 @@ import { ModalSearchProvider } from "@/context/ModalSearchContext";
 import { ModalQuickviewProvider } from "@/context/ModalQuickviewContext";
 import { ProductProvider } from "@/context/ProductContext"; // Import the new ProductProvider
 import { CategoryProvider } from "@/context/CategoryContext";
+import { StoreProvider } from "@/context/StoreContext";
 
 const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -23,7 +24,9 @@ const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({
                 <ModalSearchProvider>
                   <ModalQuickviewProvider>
                     <ProductProvider>
-                      <CategoryProvider>{children}</CategoryProvider>
+                      <CategoryProvider>
+                        <StoreProvider>{children}</StoreProvider>
+                      </CategoryProvider>
                     </ProductProvider>
                   </ModalQuickviewProvider>
                 </ModalSearchProvider>

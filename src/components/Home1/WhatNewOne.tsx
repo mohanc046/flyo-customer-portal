@@ -9,9 +9,10 @@ import { motion } from "framer-motion";
 interface Props {
   start: number;
   limit: number;
+  storeName: string | null;
 }
 
-const WhatNewOne: React.FC<Props> = ({ start, limit }) => {
+const WhatNewOne: React.FC<Props> = ({ start, limit, storeName }) => {
   const { products, updatePayload } = useProductContext();
   const { isLoading, error, fetchCategoriesData } = useCategoryContext();
   const { categoryList } = useCategoryContext();
@@ -19,6 +20,7 @@ const WhatNewOne: React.FC<Props> = ({ start, limit }) => {
   const [activeTab, setActiveTab] = useState<string>("");
 
   useEffect(() => {
+    updatePayload({ storeName: storeName || "" });
     if (categoryList.length === 0) {
       fetchCategoriesData();
     }
