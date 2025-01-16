@@ -78,16 +78,23 @@ const CheckoutForm = ({ setClientSceret }) => {
       }
 
       // Extract products from cartState
-      const products = cartState.cartArray;
+      const products = cartState.cartArray.map((item) => ({
+        productId: item._id,
+        quantity: item.quantity,
+        color: item.selectedColor,
+        size: item.selectedSize,
+      }));
+
       const storeId = storeData?.store?._id;
 
       // Create the order
       const { client_secret } = await createOrder(
         shippingAddress,
-        totalCart - discount + ship,
-        products,
-        storeId
+        totalCart - discount + ship, // Calculate the total amount
+        products, // Pass the transformed products array
+        storeId // Pass the store ID
       );
+
       setClientSceret(client_secret);
 
       // Confirm payment using Stripe

@@ -28,7 +28,7 @@ const Default: React.FC<Props> = ({ productId }) => {
   const { addToCart, updateCart, cartState } = useCart();
   const { openModalCart } = useModalCartContext();
   const [activeColor, setActiveColor] = useState<string>("red");
-  const [activeSize, setActiveSize] = useState<string>("XL");
+  const [activeSize, setActiveSize] = useState<string>("1");
   const { products, updatePayload } = useProductContext();
 
   const swiperRef: any = useRef();
