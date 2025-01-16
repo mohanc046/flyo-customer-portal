@@ -102,7 +102,12 @@ export const fetchBanners = async (storeName) => {
   return response.data;
 };
 
-export const createOrder = async (addressInfo, totalOrderCost, products) => {
+export const createOrder = async (
+  addressInfo,
+  totalOrderCost,
+  products,
+  storeId
+) => {
   const URL = getServiceURL();
   const authToken = getAuthToken(); // Replace this with your actual token retrieval logic
   try {
@@ -110,7 +115,7 @@ export const createOrder = async (addressInfo, totalOrderCost, products) => {
       `${URL}/order/create`,
       {
         products,
-        storeId: "6788d36562216381aef8b233",
+        storeId: storeId,
         addressInfo,
         totalOrderCost,
       },

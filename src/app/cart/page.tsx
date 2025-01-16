@@ -57,7 +57,7 @@ const Cart = () => {
       setApplyCode(minValue);
       setDiscountCart(discount);
     } else {
-      alert(`Minimum order must be ${minValue}$`);
+      alert(`Minimum order must be ${minValue}₹`);
     }
   };
 
@@ -142,7 +142,7 @@ const Cart = () => {
                           </div>
                           <div className="w-1/12 price flex items-center justify-center">
                             <div className="text-title text-center">
-                              ${product.price}.00
+                            ₹{product.price}.00
                             </div>
                           </div>
                           <div className="w-1/6 flex items-center justify-center">
@@ -176,7 +176,7 @@ const Cart = () => {
                           </div>
                           <div className="w-1/6 flex total-price items-center justify-center">
                             <div className="text-title text-center">
-                              ${product.quantity * product.price}.00
+                            ₹{product.quantity * product.price}.00
                             </div>
                           </div>
                           <div className="w-1/12 flex items-center justify-center">
@@ -213,7 +213,7 @@ const Cart = () => {
                 <div className="total-block py-5 flex justify-between border-b border-line">
                   <div className="text-title">Subtotal</div>
                   <div className="text-title">
-                    $<span className="total-product">{totalCart}</span>
+                  ₹<span className="total-product">{totalCart}</span>
                     <span>.00</span>
                   </div>
                 </div>
@@ -221,7 +221,7 @@ const Cart = () => {
                   <div className="text-title">Discounts</div>
                   <div className="text-title">
                     {" "}
-                    <span>-$</span>
+                    <span>-₹</span>
                     <span className="discount">{discountCart}</span>
                     <span>.00</span>
                   </div>
@@ -285,12 +285,12 @@ const Cart = () => {
                       </div>
                     </div>
                     <div className="right">
-                      <div className="ship">$0.00</div>
+                      <div className="ship">₹0.00</div>
                       <div className="local text-on-surface-variant1 mt-1">
-                        $30.00
+                      ₹30.00
                       </div>
                       <div className="flat text-on-surface-variant1 mt-1">
-                        $40.00
+                      ₹40.00
                       </div>
                     </div>
                   </div>
@@ -298,7 +298,7 @@ const Cart = () => {
                 <div className="total-cart-block pt-4 pb-4 flex justify-between">
                   <div className="heading5">Total</div>
                   <div className="heading5">
-                    $
+                  ₹
                     <span className="total-cart heading5">
                       {totalCart - discountCart + shipCart}
                     </span>

@@ -15,12 +15,14 @@ import {
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { createOrder, getStripePublishableKey } from "@/utils/api.service";
+import { useStore } from "@/context/StoreContext";
 
 const CheckoutForm = ({ setClientSceret }) => {
   const stripe = useStripe();
   const elements = useElements();
   const searchParams = useSearchParams();
   const { cartState } = useCart();
+  const { storeData } = useStore();
 
   const discount = Number(searchParams.get("discount") || 0);
   const ship = Number(searchParams.get("ship") || 0);
@@ -72,12 +74,14 @@ const CheckoutForm = ({ setClientSceret }) => {
 
       // Extract products from cartState
       const products = cartState.cartArray;
+      const storeId = storeData?.store?._id;
 
       // Create the order
       const { client_secret } = await createOrder(
         shippingAddress,
         totalCart - discount + ship,
-        products
+        products,
+        storeId
       );
       setClientSceret(client_secret);
 
@@ -310,8 +314,13 @@ const Checkout = () => {
         <div className="container">
           <Elements
             stripe={stripePromise}
-            options={{ clientSecret: clientSecret || "" }}
+            options={{
+              clientSecret:
+                clientSecret ||
+                "pi_3Qht0VETfYJwWWxs06oFcVfK_secret_wah12ufki8yPwfaTYJtykWuiR",
+            }}
           >
+            <PaymentElement />
             <CheckoutForm setClientSceret={setClientSecret} />
           </Elements>
         </div>
