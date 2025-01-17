@@ -13,6 +13,7 @@ export default function ImgOrVideoRenderer(props) {
     description,
     videoStyles,
     muted = true,
+    objectFit,
   } = props;
   return (
     <>
@@ -24,6 +25,9 @@ export default function ImgOrVideoRenderer(props) {
           width={width}
           height={height}
           alt={description}
+          style={{
+            objectFit: objectFit,
+          }}
         />
       ) : (
         <VideoComponent

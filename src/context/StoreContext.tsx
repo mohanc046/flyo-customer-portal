@@ -7,6 +7,7 @@ import React, {
   ReactNode,
   Dispatch,
   SetStateAction,
+  useEffect,
 } from "react";
 
 // Define Types
@@ -34,6 +35,10 @@ interface Store {
   storeConfig: StoreConfig;
   addressInfo: AddressInfo;
   __v: number;
+  bannerConfig: {
+    enable: boolean;
+    list: string[];
+  };
 }
 
 interface StoreData {
@@ -45,6 +50,8 @@ interface StoreData {
 interface StoreContextProps {
   storeData: StoreData | null;
   setStoreData: Dispatch<SetStateAction<StoreData | null>>;
+  banners: string[];
+  loadBanners: () => void;
 }
 
 // Create Context
@@ -55,9 +62,36 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [storeData, setStoreData] = useState<StoreData | null>(null);
+  const [banners, setBanners] = useState<string[]>([]);
+
+  // Load banners when store data changes
+  useEffect(() => {
+    if (storeData?.store?.bannerConfig?.list) {
+      const filteredBanners = storeData.store.bannerConfig.list.filter(
+        (banner) => banner !== null
+      );
+      setBanners(filteredBanners);
+    }
+  }, [storeData]);
+
+  const loadBanners = () => {
+    if (storeData?.store?.bannerConfig?.list) {
+      const filteredBanners = storeData.store.bannerConfig.list.filter(
+        (banner) => banner !== null
+      );
+      setBanners(filteredBanners);
+    }
+  };
 
   return (
-    <StoreContext.Provider value={{ storeData, setStoreData }}>
+    <StoreContext.Provider
+      value={{
+        storeData,
+        setStoreData,
+        banners,
+        loadBanners,
+      }}
+    >
       {children}
     </StoreContext.Provider>
   );

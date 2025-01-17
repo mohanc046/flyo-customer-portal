@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
-import Link from "next/link";
+import _ from "lodash";
 import { useRouter } from "next/navigation";
 import TopNavOne from "@/components/Header/TopNav/TopNavOne";
 import MenuOne from "@/components/Header/Menu/MenuOne";
@@ -75,7 +74,12 @@ const Cart = () => {
   }
 
   const redirectToCheckout = () => {
-    router.push(`/checkout?discount=${discountCart}&ship=${shipCart}`);
+    const user = localStorage.getItem("access_token");
+    if (!_.isEmpty(user)) {
+      router.push(`/checkout?discount=${discountCart}&ship=${shipCart}`);
+    } else {
+      router.push(`/login`);
+    }
   };
 
   return (

@@ -15,7 +15,7 @@ import { useStore } from "@/context/StoreContext";
 
 export default function Home() {
   const searchParams = useSearchParams();
-  const { setStoreData } = useStore();
+  const { storeData, setStoreData } = useStore();
   const storeName = searchParams.get("store");
 
   useEffect(() => {

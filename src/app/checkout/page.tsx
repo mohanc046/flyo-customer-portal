@@ -89,9 +89,9 @@ const CheckoutForm = ({ setClientSceret }) => {
       // Create the order
       const { client_secret } = await createOrder(
         shippingAddress,
-        totalCart - discount + ship, // Calculate the total amount
-        products, // Pass the transformed products array
-        storeId // Pass the store ID
+        totalCart - discount + ship,
+        products,
+        storeId
       );
 
       setClientSceret(client_secret);

@@ -12,6 +12,8 @@ import { useModalCartContext } from "@/context/ModalCartContext";
 import { useModalWishlistContext } from "@/context/ModalWishlistContext";
 import { useModalSearchContext } from "@/context/ModalSearchContext";
 import { useCart } from "@/context/CartContext";
+import DynamicTitle from "@/app/DynamicTitle";
+import DynamicTitleText from "@/app/DynamicTitleText";
 
 interface Props {
   props: string;
@@ -58,7 +60,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
   return (
     <>
       <div
-        className={`header-menu style-one ${
+        className={`header-menu bg-white style-one ${
           fixedHeader ? "fixed" : "absolute"
         } top-0 left-0 right-0 w-full md:h-[74px] h-[56px] ${props}`}
       >
@@ -71,12 +73,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
               <i className="icon-category text-2xl"></i>
             </div>
             <div className="left flex items-center gap-16">
-              <Link
-                href={"/"}
-                className="flex items-center max-lg:absolute max-lg:left-1/2 max-lg:-translate-x-1/2"
-              >
-                <div className="heading4">FlyoFashion</div>
-              </Link>
+              <div className="heading4">{<DynamicTitleText />}</div>
               <div className="menu-main h-full max-lg:hidden">
                 <ul className="flex items-center gap-8 h-full">
                   {NAV_ITEMS.map((item, index) => (
@@ -164,7 +161,9 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                   {NAV_ITEMS.map((item, index) => (
                     <li
                       key={index}
-                      className={`mt-5 ${openSubNavMobile === index ? "open" : ""}`}
+                      className={`mt-5 ${
+                        openSubNavMobile === index ? "open" : ""
+                      }`}
                       onClick={() => handleOpenSubNavMobile(index)}
                     >
                       <a

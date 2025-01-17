@@ -108,7 +108,7 @@ const Default: React.FC<Props> = ({ productId }) => {
                       height={1000}
                       alt="prd-img"
                       className="w-full aspect-[3/4] object-contain"
-                      muted={true}
+                      muted={false}
                     />
                   </SwiperSlide>
                 ))}

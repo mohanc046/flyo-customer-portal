@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function DynamicTitle() {
+export default function DynamicTitleText() {
   const searchParams = useSearchParams();
   const [title, setTitle] = useState("FlyoFashion"); // Default title
 
@@ -13,5 +13,5 @@ export default function DynamicTitle() {
     document.title = store;
   }, [searchParams]);
 
-  return null;
+  return title;
 }
