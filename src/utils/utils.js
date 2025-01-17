@@ -2,6 +2,12 @@ export function isImageUrl(url) {
   return `${url}`?.match(/\.(jpeg|jpg|gif|png|avif|webp)/) != null;
 }
 
+export const getUserType = () => {
+  let baseURL = window.location.pathname;
+
+  return `${baseURL}`.includes("user") ? "BUYER" : "STORE OWNER";
+};
+
 export function isVideoUrl(url) {
   return `${url}`?.match(/\.(mp4|webm|ogg|mov)$/i) != null;
 }

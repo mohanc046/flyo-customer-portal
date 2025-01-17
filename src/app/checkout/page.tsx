@@ -16,7 +16,6 @@ import {
 import { loadStripe } from "@stripe/stripe-js";
 import { createOrder, getStripePublishableKey } from "@/utils/api.service";
 import { useStore } from "@/context/StoreContext";
-import { useRouter } from "next/router";
 import { Spinner } from "@phosphor-icons/react";
 
 const CheckoutForm = ({ setClientSceret }) => {
