@@ -1,8 +1,9 @@
 "use client";
 
-// CartContext.tsx
 import React, { createContext, useContext, useReducer, useEffect } from "react";
 import { ProductType2 } from "@/type/ProductType";
+import { useStore } from "./StoreContext";
+import _ from "lodash";
 
 interface CartItem extends ProductType2 {
   quantity: number;
@@ -101,6 +102,24 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     cartArray: [],
     isLoading: false,
   });
+  const { storeData } = useStore();
+
+  // Load cart from localStorage on initialization
+  useEffect(() => {
+    const storedCart = localStorage.getItem(`cart:${storeData?.store?._id}`);
+    if (storedCart) {
+      const parsedCart: CartItem[] = JSON.parse(storedCart);
+      dispatch({ type: "LOAD_CART", payload: parsedCart });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!_.isEmpty(cartState.cartArray))
+      localStorage.setItem(
+        `cart:${storeData?.store?._id}`,
+        JSON.stringify(cartState.cartArray)
+      );
+  }, [cartState.cartArray]);
 
   const addToCart = (item: ProductType2) => {
     dispatch({ type: "ADD_TO_CART", payload: item });

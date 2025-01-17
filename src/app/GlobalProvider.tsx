@@ -16,29 +16,29 @@ const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   return (
-    <CartProvider>
-      <ModalCartProvider>
-        <WishlistProvider>
-          <ModalWishlistProvider>
-            <CompareProvider>
-              <ModalCompareProvider>
-                <ModalSearchProvider>
-                  <ModalQuickviewProvider>
-                    <ProductProvider>
-                      <CategoryProvider>
-                        <StoreProvider>
+    <StoreProvider>
+      <CartProvider>
+        <ModalCartProvider>
+          <WishlistProvider>
+            <ModalWishlistProvider>
+              <CompareProvider>
+                <ModalCompareProvider>
+                  <ModalSearchProvider>
+                    <ModalQuickviewProvider>
+                      <ProductProvider>
+                        <CategoryProvider>
                           <LoginProvider>{children}</LoginProvider>
-                        </StoreProvider>
-                      </CategoryProvider>
-                    </ProductProvider>
-                  </ModalQuickviewProvider>
-                </ModalSearchProvider>
-              </ModalCompareProvider>
-            </CompareProvider>
-          </ModalWishlistProvider>
-        </WishlistProvider>
-      </ModalCartProvider>
-    </CartProvider>
+                        </CategoryProvider>
+                      </ProductProvider>
+                    </ModalQuickviewProvider>
+                  </ModalSearchProvider>
+                </ModalCompareProvider>
+              </CompareProvider>
+            </ModalWishlistProvider>
+          </WishlistProvider>
+        </ModalCartProvider>
+      </CartProvider>
+    </StoreProvider>
   );
 };
 

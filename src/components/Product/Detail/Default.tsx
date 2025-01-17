@@ -108,6 +108,7 @@ const Default: React.FC<Props> = ({ productId }) => {
                       height={1000}
                       alt="prd-img"
                       className="w-full aspect-[3/4] object-contain"
+                      muted={true}
                     />
                   </SwiperSlide>
                 ))}
@@ -169,9 +170,9 @@ const Default: React.FC<Props> = ({ productId }) => {
             <div className="product-infor md:w-1/2 w-full lg:pl-[15px] md:pl-2">
               <div className="flex justify-between">
                 <div>
-                  <div className="caption2 text-secondary font-semibold uppercase">
+                  {/* <div className="caption2 text-secondary font-semibold uppercase">
                     {"Home & Appliances"}
-                  </div>
+                  </div> */}
                   <div className="heading4 mt-1">{product.productName}</div>
                 </div>
                 <div

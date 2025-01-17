@@ -4,8 +4,16 @@ import VideoComponent from "../VideoComponent/VideoComponent";
 import { isImageUrl } from "../../utils/utils";
 
 export default function ImgOrVideoRenderer(props) {
-  const { className, onClick, src, width, height, description, videoStyles } =
-    props;
+  const {
+    className,
+    onClick,
+    src,
+    width,
+    height,
+    description,
+    videoStyles,
+    muted = true,
+  } = props;
   return (
     <>
       {isImageUrl(src) ? (
@@ -27,7 +35,7 @@ export default function ImgOrVideoRenderer(props) {
           styles={videoStyles}
           autoPlay
           loop
-          muted
+          muted={muted}
         />
       )}
     </>
