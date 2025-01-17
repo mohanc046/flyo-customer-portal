@@ -79,25 +79,9 @@ export const fetchPlacedOrders = async (storeName) => {
       },
     }
   );
+  console.log(response.data);
 
-  return response.data;
-};
-
-export const fetchBanners = async (storeName) => {
-  const response = await fetch(
-    `${getServiceURL()}/store/fetchStoreByBusinessName`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${getAuthToken()}`,
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        businessName: storeName,
-      }),
-    }
-  );
-  return response.data;
+  return response.data.orderList;
 };
 
 export const createOrder = async (

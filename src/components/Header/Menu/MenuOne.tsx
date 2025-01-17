@@ -14,17 +14,11 @@ import { useModalSearchContext } from "@/context/ModalSearchContext";
 import { useCart } from "@/context/CartContext";
 import DynamicTitle from "@/app/DynamicTitle";
 import DynamicTitleText from "@/app/DynamicTitleText";
+import { useStore } from "@/context/StoreContext";
 
 interface Props {
   props: string;
 }
-
-const NAV_ITEMS = [
-  { name: "Home", path: "/" },
-  { name: "Orders", path: "/orders" },
-  { name: "Account", path: "/account" },
-  { name: "Logout", path: "/logout" },
-];
 
 const MenuOne: React.FC<Props> = ({ props }) => {
   const router = useRouter();
@@ -39,6 +33,15 @@ const MenuOne: React.FC<Props> = ({ props }) => {
   const { openModalSearch } = useModalSearchContext();
   const [fixedHeader, setFixedHeader] = useState(false);
   const [lastScrollPosition, setLastScrollPosition] = useState(0);
+
+  const { storeData } = useStore();
+
+  const NAV_ITEMS = [
+    { name: "Home", path: `/?store=${storeData?.store?.businessName}` },
+    { name: "Orders", path: "/orders" },
+    { name: "Cart", path: "/cart" },
+    { name: "Logout", path: "/logout" },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -61,7 +64,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
     <>
       <div
         className={`header-menu bg-white style-one ${
-          fixedHeader ? "fixed" : "absolute"
+          fixedHeader ? "fixed" : "relative"
         } top-0 left-0 right-0 w-full md:h-[74px] h-[56px] ${props}`}
       >
         <div className="container mx-auto h-full">
@@ -142,7 +145,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                   href={"/"}
                   className="logo text-3xl font-semibold text-center"
                 >
-                  FlyoFashion
+                  {<DynamicTitleText />}
                 </Link>
               </div>
               <div className="form-search relative mt-2">

@@ -11,33 +11,36 @@ import { ProductProvider } from "@/context/ProductContext"; // Import the new Pr
 import { CategoryProvider } from "@/context/CategoryContext";
 import { StoreProvider } from "@/context/StoreContext";
 import { LoginProvider } from "@/context/LoginContext";
+import { OrdersProvider } from "@/context/OrdersContext";
 
 const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   return (
     <StoreProvider>
-      <CartProvider>
-        <ModalCartProvider>
-          <WishlistProvider>
-            <ModalWishlistProvider>
-              <CompareProvider>
-                <ModalCompareProvider>
-                  <ModalSearchProvider>
-                    <ModalQuickviewProvider>
-                      <ProductProvider>
-                        <CategoryProvider>
-                          <LoginProvider>{children}</LoginProvider>
-                        </CategoryProvider>
-                      </ProductProvider>
-                    </ModalQuickviewProvider>
-                  </ModalSearchProvider>
-                </ModalCompareProvider>
-              </CompareProvider>
-            </ModalWishlistProvider>
-          </WishlistProvider>
-        </ModalCartProvider>
-      </CartProvider>
+      <OrdersProvider>
+        <CartProvider>
+          <ModalCartProvider>
+            <WishlistProvider>
+              <ModalWishlistProvider>
+                <CompareProvider>
+                  <ModalCompareProvider>
+                    <ModalSearchProvider>
+                      <ModalQuickviewProvider>
+                        <ProductProvider>
+                          <CategoryProvider>
+                            <LoginProvider>{children}</LoginProvider>
+                          </CategoryProvider>
+                        </ProductProvider>
+                      </ModalQuickviewProvider>
+                    </ModalSearchProvider>
+                  </ModalCompareProvider>
+                </CompareProvider>
+              </ModalWishlistProvider>
+            </WishlistProvider>
+          </ModalCartProvider>
+        </CartProvider>
+      </OrdersProvider>
     </StoreProvider>
   );
 };

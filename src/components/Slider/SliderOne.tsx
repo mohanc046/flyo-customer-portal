@@ -17,7 +17,7 @@ const SliderOne = () => {
   );
 
   return (
-    <div className="slider-block style-one w-full" style={{ height: "75vh" }}>
+    <div className="slider-block style-one w-full lg:h-[75vh] md:h-[60vh] sm:h-[40vh]">
       <div className="slider-main h-full w-full">
         <Swiper
           spaceBetween={0}
@@ -45,7 +45,7 @@ const SliderOne = () => {
             ))
           ) : (
             <div className="flex justify-center items-center h-full">
-              <p>No banners available</p>
+              <p className="text-gray-500">No banners available</p>
             </div>
           )}
         </Swiper>
