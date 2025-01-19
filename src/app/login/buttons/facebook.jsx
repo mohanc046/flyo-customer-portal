@@ -2,16 +2,19 @@ import React from "react";
 import FacebookLogin from "react-facebook-login";
 import { config } from "../../../config";
 import _ from "lodash";
-import { LoginService } from "../login.service";
 import Image from "next/image";
+import { useLogin } from "@/context/LoginContext";
+import { useRouter } from "next/navigation";
+import { useStore } from "@/context/StoreContext";
 
 function FacebookOAuthLogin() {
-  // const navigate = useNavigate();
-  const { authenticateFaceBookLogin } = LoginService();
+  const router = useRouter();
+  const { authenticateFaceBookLogin } = useLogin();
+  const { storeData } = useStore();
 
-  // const navigateToDashboard = () => {
-  //   navigate("/home");
-  // };
+  const navigateToDashboard = () => {
+    router.push(`/?store=${storeData?.store?.businessName}`);
+  };
 
   const onSuccess = async (response) => {
     const token = _.get(response, "access_token", "");
@@ -33,9 +36,7 @@ function FacebookOAuthLogin() {
           borderColor: "transparent",
         }}
         textButton=""
-        icon={
-          <Image src={config.FACEBOOK} height={50} width={50} />
-        }
+        icon={<Image src={config.FACEBOOK} height={50} width={50} />}
       />
     </div>
   );

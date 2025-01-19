@@ -7,6 +7,8 @@ import "swiper/css/bundle";
 import "swiper/css/effect-fade";
 import { useStore } from "@/context/StoreContext";
 import ImgRenderer from "../ImgOrVideoRenderer/ImgRenderer";
+import Image from "next/image";
+import { config } from "../../config";
 
 const SliderOne = () => {
   const { banners } = useStore();
@@ -17,7 +19,7 @@ const SliderOne = () => {
   );
 
   return (
-    <div className="slider-block style-one w-full lg:h-[75vh] md:h-[60vh] sm:h-[40vh]">
+    <div className="slider-block style-one w-full ">
       <div className="slider-main h-full w-full">
         <Swiper
           spaceBetween={0}
@@ -33,7 +35,7 @@ const SliderOne = () => {
           {validBanners.length > 0 ? (
             validBanners.map((banner, index) => (
               <SwiperSlide key={index}>
-                <div className="slider-item h-full w-full relative">
+                <div className="slider-item h-full w-full relative lg:h-[75vh]">
                   <ImgRenderer
                     src={banner}
                     className="h-full w-full object-cover"
@@ -44,8 +46,14 @@ const SliderOne = () => {
               </SwiperSlide>
             ))
           ) : (
-            <div className="flex justify-center items-center h-full">
-              <p className="text-gray-500">No banners available</p>
+            <div className="slider-item h-full w-full relative lg:h-[75vh]">
+              <Image
+                src={config.BANNER_PLACEHOLDER}
+                height={500}
+                className="h-full w-full object-cover"
+                width={1500}
+                alt="apple"
+              />
             </div>
           )}
         </Swiper>

@@ -5,6 +5,7 @@ import { config } from "../../../config";
 import Image from "next/image";
 import { useLogin } from "@/context/LoginContext";
 import { useRouter } from "next/navigation";
+import { useStore } from "@/context/StoreContext";
 
 export const CustomButton = (props) => {
   const { onSuccess, onFailure } = props;
@@ -25,9 +26,10 @@ export const CustomButton = (props) => {
 function GoogleOAuthLogin() {
   const router = useRouter();
   const { authenticateGoogleLogin } = useLogin();
+  const { storeData } = useStore();
 
   const navigateToDashboard = () => {
-    router.push("/");
+    router.push(`/?store=${storeData?.store?.businessName}`);
   };
 
   const onSuccess = async (response) => {
