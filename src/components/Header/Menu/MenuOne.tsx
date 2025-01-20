@@ -35,12 +35,16 @@ const MenuOne: React.FC<Props> = ({ props }) => {
   const [lastScrollPosition, setLastScrollPosition] = useState(0);
 
   const { storeData } = useStore();
+  const isUserLoggedIn = localStorage.getItem("access_token");
 
   const NAV_ITEMS = [
-    { name: "Home", path: `/?store=${storeData?.store?.businessName}` },
+    { name: "Home", path: `/?store=${storeData?.store?.businessName || ""}` },
     { name: "Orders", path: "/orders" },
     { name: "Cart", path: "/cart" },
-    { name: "Logout", path: "/logout" },
+    {
+      name: isUserLoggedIn ? "Logout" : "Login",
+      path: isUserLoggedIn ? "/logout" : "/login",
+    },
   ];
 
   useEffect(() => {

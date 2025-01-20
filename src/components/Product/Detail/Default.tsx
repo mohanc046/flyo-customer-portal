@@ -63,19 +63,9 @@ const Default: React.FC<Props> = ({ productId }) => {
   const handleAddToCart = () => {
     if (!cartState.cartArray.find((item) => item._id === product._id)) {
       addToCart({ ...product });
-      updateCart(
-        product._id,
-        1,
-        activeSize,
-        activeColor
-      );
+      updateCart(product._id, 1, activeSize, activeColor);
     } else {
-      updateCart(
-        product._id,
-        1,
-        activeSize,
-        activeColor
-      );
+      updateCart(product._id, 1, activeSize, activeColor);
     }
     openModalCart();
   };
@@ -113,59 +103,6 @@ const Default: React.FC<Props> = ({ productId }) => {
                   </SwiperSlide>
                 ))}
               </Swiper>
-              {/* <Swiper
-                onSwiper={(swiper) => {
-                  handleSwiper(swiper);
-                }}
-                spaceBetween={0}
-                slidesPerView={4}
-                freeMode={true}
-                watchSlidesProgress={true}
-                modules={[Navigation, Thumbs]}
-                className="mySwiper"
-              >
-                {product.images.map((item, index) => (
-                  <SwiperSlide key={index} style={{backgroundColor: "#000"}}>
-                    <ImgOrVideoRenderer
-                      key={index}
-                      src={item}
-                      width={1000}
-                      height={1000}
-                      alt="prd-img"
-                      className="w-full aspect-[3/4] object-contain rounded-xl"
-                    />
-                  </SwiperSlide>
-                ))}
-              </Swiper> */}
-              {/* <Swiper
-                onSwiper={(swiper) => {
-                  handleSwiper(swiper);
-                }}
-                spaceBetween={0}
-                slidesPerView={4}
-                freeMode={true}
-                watchSlidesProgress={true}
-                modules={[Navigation, Thumbs]}
-                className="mySwiper"
-              >
-                {Array(3)
-                  .fill(product.images[0])
-                  .map((item, index) => (
-                    <SwiperSlide
-                      key={index}
-                      style={{ backgroundColor: "#000" }}
-                    >
-                      <ImgOrVideoRenderer
-                        key={index}
-                        src={item}
-                        width={1000}
-                        height={1000}
-                        alt={`prd-img-₹{index + 1}`}
-                        className="w-full aspect-[3/4] object-contain rounded-xl"
-                      />
-                    </SwiperSlide>
-                  ))}
-              </Swiper> */}
             </div>
             <div className="product-infor md:w-1/2 w-full lg:pl-[15px] md:pl-2">
               <div className="flex justify-between">

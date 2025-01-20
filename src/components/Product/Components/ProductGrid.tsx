@@ -17,7 +17,9 @@ const ProductGrid: React.FC<ProductProps> = ({ data }) => {
 
   const percentSale = Math.floor(100 - (data.discountPrice / data.price) * 100);
 
-  if(!Boolean(data?.images?.length)) { return null };
+  if (!Boolean(data?.images?.length)) {
+    return null;
+  }
 
   return (
     <div className="product-item grid-type">
@@ -55,16 +57,14 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ media, name }) => {
       style={{ backgroundColor: "#00000080" }}
     >
       <div className="product-img w-full h-full aspect-[3/4]">
-        {
-          media.map((src, index) => (
-            <ImgOrVideoRenderer
-              key={index}
-              src={src}
-              className="w-full h-full object-cover duration-700"
-              description={name}
-            />
-          ))
-        }
+        {media.map((src, index) => (
+          <ImgOrVideoRenderer
+            key={index}
+            src={src}
+            className="w-full h-full object-cover duration-700"
+            description={name}
+          />
+        ))}
       </div>
     </div>
   );
@@ -85,7 +85,8 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
   percentSale,
   available,
 }) => (
-  <div className="product-infor mt-4 lg:mb-7">
+  <div className="mt-4 lg:mb-7">
+    {/* Hover style: product-infor */}
     <div className="product-name text-title duration-300">{name}</div>
     <ProductPrice
       price={price}
