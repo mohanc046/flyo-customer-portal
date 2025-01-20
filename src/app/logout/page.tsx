@@ -8,6 +8,7 @@ const Logout = () => {
 
   useEffect(() => {
     localStorage.removeItem("access_token");
+    localStorage.removeItem("userInfo");
     sessionStorage.clear();
     router.push("/login");
   }, []);

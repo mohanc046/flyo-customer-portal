@@ -15,17 +15,21 @@ import { useStore } from "@/context/StoreContext";
 
 export default function Home() {
   const searchParams = useSearchParams();
-  const { storeData, setStoreData } = useStore();
+  const { setStoreData, setIsLoading } = useStore();
   const storeName = searchParams.get("store");
 
   useEffect(() => {
     if (storeName) {
+      setIsLoading(true);
       fetchStoreInfo(storeName)
         .then((storeData) => {
           setStoreData(storeData);
         })
         .catch((error) => {
           console.error("Error fetching store info:", error);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   }, [searchParams]);

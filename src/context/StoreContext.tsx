@@ -52,6 +52,8 @@ interface StoreContextProps {
   setStoreData: Dispatch<SetStateAction<StoreData | null>>;
   banners: string[];
   loadBanners: () => void;
+  isLoading: boolean;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 // Create Context
@@ -63,23 +65,28 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [storeData, setStoreData] = useState<StoreData | null>(null);
   const [banners, setBanners] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Load banners when store data changes
   useEffect(() => {
     if (storeData?.store?.bannerConfig?.list) {
+      setIsLoading(true);
       const filteredBanners = storeData.store.bannerConfig.list.filter(
         (banner) => banner !== null
       );
       setBanners(filteredBanners);
+      setIsLoading(false);
     }
   }, [storeData]);
 
   const loadBanners = () => {
     if (storeData?.store?.bannerConfig?.list) {
+      setIsLoading(true);
       const filteredBanners = storeData.store.bannerConfig.list.filter(
         (banner) => banner !== null
       );
       setBanners(filteredBanners);
+      setIsLoading(false);
     }
   };
 
@@ -90,6 +97,8 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({
         setStoreData,
         banners,
         loadBanners,
+        isLoading,
+        setIsLoading,
       }}
     >
       {children}
