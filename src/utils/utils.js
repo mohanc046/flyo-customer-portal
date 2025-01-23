@@ -25,6 +25,17 @@ export const getServiceURL = () => {
   return SERVICE_URL;
 };
 
+export function getDomainName() {
+  try {
+    const hostname = window.location.hostname; // Get the hostname (e.g., 'decathlon.store.afras.in')
+    if (!hostname) throw new Error("Hostname is empty or undefined.");
+    return hostname.split(".")[0]; // Extract the first part of the domain (e.g., 'decathlon')
+  } catch (error) {
+    console.error("Error extracting domain name:", error.message);
+    return null; // Return null or a default value if an error occurs
+  }
+}
+
 export const calculateDaysAgo = (createdAt) => {
   if (!createdAt) return 0; // Handle cases where createdAt is undefined or null
   const createdDate = new Date(createdAt); // Parse the createdAt date

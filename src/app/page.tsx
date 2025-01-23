@@ -12,11 +12,13 @@ import Footer from "@/components/Footer/Footer";
 import { useSearchParams } from "next/navigation";
 import { fetchStoreInfo } from "@/utils/api.service";
 import { useStore } from "@/context/StoreContext";
+import { getDomainName } from "@/utils/utils";
 
 export default function Home() {
   const searchParams = useSearchParams();
   const { setStoreData, setIsLoading } = useStore();
-  const storeName = searchParams.get("store");
+  const storeName = getDomainName();
+  console.log(storeName);
 
   useEffect(() => {
     if (storeName) {
@@ -32,7 +34,7 @@ export default function Home() {
           setIsLoading(false);
         });
     }
-  }, [searchParams]);
+  }, [storeName]);
 
   return (
     <>
