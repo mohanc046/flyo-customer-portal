@@ -79,8 +79,6 @@ export const fetchPlacedOrders = async (storeName) => {
       },
     }
   );
-  console.log(response.data);
-
   return response.data.orderList;
 };
 
