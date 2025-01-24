@@ -38,7 +38,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
   const isUserLoggedIn = localStorage.getItem("access_token");
 
   const NAV_ITEMS = [
-    { name: "Home", path: `/?store=${storeData?.store?.businessName || ""}` },
+    { name: "Home", path: `/` },
     { name: "Orders", path: "/orders" },
     { name: "Cart", path: "/cart" },
     {

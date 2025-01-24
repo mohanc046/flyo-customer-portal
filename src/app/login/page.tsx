@@ -39,7 +39,7 @@ const Login = () => {
     await verifyLoginOTP({
       state,
       navigateToDashboard: () => {
-        router.push(`/?store=${storeData?.store?.businessName}`);
+        router.push(`/`);
       },
     });
   };

@@ -29,7 +29,7 @@ function GoogleOAuthLogin() {
   const { storeData } = useStore();
 
   const navigateToDashboard = () => {
-    router.push(`/?store=${storeData?.store?.businessName}`);
+    router.push(`/`);
   };
 
   const onSuccess = async (response) => {
