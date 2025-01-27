@@ -4,7 +4,6 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true, // Bypass TypeScript errors during the build
   },
-  output: 'export'
 };
 
 module.exports = nextConfig;
