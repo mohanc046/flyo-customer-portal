@@ -12,6 +12,8 @@ import { useModalCartContext } from "@/context/ModalCartContext";
 import { useModalWishlistContext } from "@/context/ModalWishlistContext";
 import { useModalSearchContext } from "@/context/ModalSearchContext";
 import { useCart } from "@/context/CartContext";
+import DynamicTitle from "@/app/DynamicTitle";
+import DynamicTitleText from "@/app/DynamicTitleText";
 import { useStore } from "@/context/StoreContext";
 
 interface Props {
@@ -32,7 +34,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
   const [fixedHeader, setFixedHeader] = useState(false);
   const [lastScrollPosition, setLastScrollPosition] = useState(0);
 
-  const { businessName } = useStore();
+  const { storeData } = useStore();
   const isUserLoggedIn = localStorage.getItem("access_token");
 
   const NAV_ITEMS = [
@@ -78,7 +80,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
               <i className="icon-category text-2xl"></i>
             </div>
             <div className="left flex items-center gap-16">
-              <div className="heading4">{businessName}</div>
+              <div className="heading4">{<DynamicTitleText />}</div>
               <div className="menu-main h-full max-lg:hidden">
                 <ul className="flex items-center gap-8 h-full">
                   {NAV_ITEMS.map((item, index) => (
@@ -147,7 +149,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                   href={"/"}
                   className="logo text-3xl font-semibold text-center"
                 >
-                  {businessName}
+                  {<DynamicTitleText />}
                 </Link>
               </div>
               <div className="form-search relative mt-2">

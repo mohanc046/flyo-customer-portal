@@ -50,7 +50,6 @@ interface StoreData {
 interface StoreContextProps {
   storeData: StoreData | null;
   setStoreData: Dispatch<SetStateAction<StoreData | null>>;
-  businessName: string | null;
   banners: string[];
   loadBanners: () => void;
   isLoading: boolean;
@@ -67,9 +66,6 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({
   const [storeData, setStoreData] = useState<StoreData | null>(null);
   const [banners, setBanners] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  // Extract businessName
-  const businessName = storeData?.store?.businessName || null;
 
   // Load banners when store data changes
   useEffect(() => {
@@ -99,7 +95,6 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({
       value={{
         storeData,
         setStoreData,
-        businessName,
         banners,
         loadBanners,
         isLoading,
