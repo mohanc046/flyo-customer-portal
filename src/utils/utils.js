@@ -1,3 +1,5 @@
+import { useStore } from "@/context/StoreContext";
+
 export function isImageUrl(url) {
   return `${url}`?.match(/\.(jpeg|jpg|gif|png|avif|webp)/) != null;
 }
