@@ -274,7 +274,7 @@ const Checkout = () => {
                 </div>
               </form>
               <div className="copyright caption1 md:mt-20 mt-12 py-3 border-t border-line">
-                ©2024 Flyashop. All Rights Reserved.
+                ©2024 FlyoFashion. All Rights Reserved.
               </div>
             </div>
           </div>
