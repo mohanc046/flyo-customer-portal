@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 export default function DynamicTitleText() {
   const searchParams = useSearchParams();
-  const [title, setTitle] = useState("FlyoFashion"); // Default title
+  const [title, setTitle] = useState(""); // Default title
 
   useEffect(() => {
     const store = searchParams.get("store") || "FlyoFashion";
