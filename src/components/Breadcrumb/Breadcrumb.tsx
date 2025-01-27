@@ -20,7 +20,7 @@ const Breadcrumb: React.FC<Pros> = ({ heading, subHeading }) => {
               <div className="text-content">
                 <div className="heading2 text-center">{heading}</div>
                 <div className="link flex items-center justify-center gap-1 caption1 mt-3">
-                  <Link href={`/?store=${storeData?.store?.businessName}`}>
+                  <Link href={`#`}>
                     Homepage
                   </Link>
                   <Icon.CaretRight size={14} className="text-secondary2" />

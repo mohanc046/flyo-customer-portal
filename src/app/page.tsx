@@ -18,8 +18,6 @@ export default function Home() {
   const searchParams = useSearchParams();
   const { setStoreData, setIsLoading } = useStore();
   const storeName = getDomainName();
-  console.log(storeName);
-
   useEffect(() => {
     if (storeName) {
       setIsLoading(true);
@@ -34,7 +32,7 @@ export default function Home() {
           setIsLoading(false);
         });
     }
-  }, [storeName]);
+  }, []);
 
   return (
     <>

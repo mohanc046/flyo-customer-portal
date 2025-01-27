@@ -24,7 +24,6 @@ const WhatNewOne: React.FC<Props> = ({ start, limit, storeName }) => {
     if (categoryList.length === 0) {
       fetchCategoriesData();
     }
-    console.log(categoryList); // Debugging step
   }, [categoryList, fetchCategoriesData]);
 
   const handleTabClick = (categoryKey: string) => {

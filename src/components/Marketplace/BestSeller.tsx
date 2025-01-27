@@ -19,9 +19,6 @@ const BestSeller: React.FC<Props> = ({ data, start, limit }) => {
     };
 
     const filteredProducts = data.filter((product) => product.category === activeTab);
-    console.log(activeTab);
-    
-
     return (
         <div className="tab-features-block style-marketplace md:pt-[60px] pt-10">
             <div className="container">
