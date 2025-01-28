@@ -44,3 +44,10 @@ export const calculateDaysAgo = (createdAt) => {
   const differenceInDays = Math.floor(differenceInTime / (1000 * 60 * 60 * 24)); // Convert to days
   return differenceInDays;
 };
+
+export const isUserLoggedIn = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("access_token");
+  }
+  return null;
+};

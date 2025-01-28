@@ -10,6 +10,7 @@ import * as Icon from "@phosphor-icons/react/dist/ssr";
 import { useCart } from "@/context/CartContext";
 import { countdownTime } from "@/store/countdownTime";
 import ImgOrVideoRenderer from "@/components/ImgOrVideoRenderer/ImgOrVideoRenderer";
+import { isUserLoggedIn } from "@/utils/utils";
 
 const Cart = () => {
   const [timeLeft, setTimeLeft] = useState(countdownTime());
@@ -74,7 +75,7 @@ const Cart = () => {
   }
 
   const redirectToCheckout = () => {
-    const user = localStorage.getItem("access_token");
+    const user = isUserLoggedIn();
     if (!_.isEmpty(user)) {
       router.push(`/checkout?discount=${discountCart}&ship=${shipCart}`);
     } else {
