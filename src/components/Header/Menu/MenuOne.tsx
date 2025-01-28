@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import * as Icon from "@phosphor-icons/react/dist/ssr";
 import { usePathname } from "next/navigation";
@@ -13,6 +12,7 @@ import { useModalWishlistContext } from "@/context/ModalWishlistContext";
 import { useModalSearchContext } from "@/context/ModalSearchContext";
 import { useCart } from "@/context/CartContext";
 import { useStore } from "@/context/StoreContext";
+import { isUserLoggedIn } from "@/utils/utils";
 
 interface Props {
   props: string;
@@ -34,15 +34,14 @@ const MenuOne: React.FC<Props> = ({ props }) => {
   const { businessName } = useStore();
 
   const { storeData } = useStore();
-  const isUserLoggedIn = localStorage.getItem("access_token");
 
   const NAV_ITEMS = [
     { name: "Home", path: `/` },
     { name: "Orders", path: "/orders" },
     { name: "Cart", path: "/cart" },
     {
-      name: isUserLoggedIn ? "Logout" : "Login",
-      path: isUserLoggedIn ? "/logout" : "/login",
+      name: isUserLoggedIn() ? "Logout" : "Login",
+      path: isUserLoggedIn() ? "/logout" : "/login",
     },
   ];
 
