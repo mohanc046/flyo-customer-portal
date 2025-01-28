@@ -1,17 +1,13 @@
 "use client";
-
+import { useStore } from "@/context/StoreContext";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function DynamicTitle() {
-  const searchParams = useSearchParams();
-  const [title, setTitle] = useState("FlyoFashion"); // Default title
-
+  const { businessName } = useStore();
   useEffect(() => {
-    const store = searchParams.get("store") || "FlyoFashion";
-    setTitle(store); // Update the state
-    document.title = store;
-  }, [searchParams]);
+    document.title = businessName || "";
+  }, []);
 
   return null;
 }

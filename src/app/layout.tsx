@@ -16,8 +16,8 @@ const serverTimeLeft: CountdownTimeType = countdownTime();
 const instrument = Instrument_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "FlyoFashion",
-  description: "Multipurpose eCommerce Template",
+  title: "Flyashop",
+  description: "",
 };
 
 export default function RootLayout({
@@ -29,7 +29,6 @@ export default function RootLayout({
     <GlobalProvider>
       <html lang="en">
         <body className={instrument.className}>
-          {/* Add the client-side component for dynamic title */}
           <DynamicTitle />
           {children}
           <ModalCart serverTimeLeft={serverTimeLeft} />
