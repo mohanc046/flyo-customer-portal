@@ -1,6 +1,5 @@
 import axios from "axios";
-import { getServiceURL } from "./utils";
-import { getAuthToken } from "./_hooks";
+import { getDomainName, getServiceURL, isUserLoggedIn } from "./utils";
 
 export const fetchStoreInfo = async (storeName) => {
   try {
@@ -21,7 +20,7 @@ export const fetchProducts = async ({
   sort = -1,
 }) => {
   const response = await axios.get(
-    `${getServiceURL()}/product/all/${storeName}/?limit=${limit}&page=${page}&category=${category}&searchText=${searchText}&sort=${sort}`
+    `${getServiceURL()}/product/all/${getDomainName()}/?limit=${limit}&page=${page}&category=${category}&searchText=${searchText}&sort=${sort}`
   );
 
   return response.data;
@@ -59,10 +58,10 @@ export const getStripePublishableKey = async () => {
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${getAuthToken()}`,
+          Authorization: `Bearer ${isUserLoggedIn()}`,
         },
       }
-    );
+    );    
     return response.data; // Assuming the response returns categories directly
   } catch (error) {
     console.error("Error fetching publishable key:", error);
@@ -75,7 +74,7 @@ export const fetchPlacedOrders = async (storeName) => {
     `${getServiceURL()}/order/userCart/${storeName}`,
     {
       headers: {
-        Authorization: `Bearer ${getAuthToken()}`,
+        Authorization: `Bearer ${isUserLoggedIn()}`,
       },
     }
   );
@@ -101,7 +100,7 @@ export const createOrder = async (
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${getAuthToken()}`,
+          Authorization: `Bearer ${isUserLoggedIn()}`,
         },
       }
     );

@@ -58,8 +58,6 @@ export const CategoryProvider: React.FC<CategoryContextProps> = ({
     setError(null);
     try {
       const response = await fetchCategoryList(); // Assumes the function returns the correct API structure
-      console.log("Fetched Categories:", response.categoryList); // Debugging log
-
       // Set the categories if the response is valid
       setCategoriesList(response.categoryList || []);
     } catch (error) {

@@ -76,6 +76,10 @@ const Cart = () => {
 
   const redirectToCheckout = () => {
     const user = isUserLoggedIn();
+
+    // call the order creation API ...
+
+
     if (!_.isEmpty(user)) {
       router.push(`/checkout?discount=${discountCart}&ship=${shipCart}`);
     } else {
