@@ -66,7 +66,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [storeData, setStoreData] = useState<StoreData | null>(null);
   const [banners, setBanners] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [businessName, setBusinessName] = useState<string | null>(null);
 
   // Sync businessName whenever storeData changes

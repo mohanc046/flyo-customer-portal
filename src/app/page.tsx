@@ -13,26 +13,36 @@ import { useSearchParams } from "next/navigation";
 import { fetchStoreInfo } from "@/utils/api.service";
 import { useStore } from "@/context/StoreContext";
 import { getDomainName } from "@/utils/utils";
+import { debounce } from 'lodash'; // Or implement your own debounce function
 
 export default function Home() {
   const searchParams = useSearchParams();
   const { setStoreData, setIsLoading } = useStore();
   const storeName = getDomainName();
+
   useEffect(() => {
-    if (storeName) {
-      setIsLoading(true);
-      fetchStoreInfo(storeName)
-        .then((storeData) => {
-          setStoreData(storeData);
-        })
-        .catch((error) => {
-          console.error("Error fetching store info:", error);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    }
-  }, []);
+    const debouncedFetch = debounce(() => {
+      if (getDomainName()) {
+        setIsLoading(true);
+        fetchStoreInfo(storeName)
+          .then((storeData) => {
+            setStoreData(storeData);
+          })
+          .catch((error) => {
+            console.error("Error fetching store info:", error);
+          })
+          .finally(() => {
+            setIsLoading(false);
+          });
+      }
+    }, 500); // 300ms debounce delay
+
+    debouncedFetch(); // Call the debounced function
+
+    return () => {
+      debouncedFetch.cancel(); // Cleanup debounce on unmount or dependency change
+    };
+  }, [getDomainName()]); // Re-run effect when `storeName` changes
 
   return (
     <>

@@ -8,9 +8,10 @@ import Breadcrumb from "@/components/Breadcrumb/Breadcrumb";
 import Footer from "@/components/Footer/Footer";
 import ImgOrVideoRenderer from "@/components/ImgOrVideoRenderer/ImgOrVideoRenderer";
 import { useOrders } from "@/context/OrdersContext";
+import _ from 'lodash';
 
 const Orders = () => {
-  const { orders, loading } = useOrders();
+  const { orders = [], loading = false } = useOrders();
   const router = useRouter();
 
   const redirectToOrderDetails = (orderId: string) => {

@@ -6,8 +6,10 @@ import React, {
   useState,
   ReactNode,
   useEffect,
+  useCallback
 } from "react";
 import { fetchCategoryList } from "@/utils/api.service"; // Assumes this function exists and fetches categories
+import { debounce } from 'lodash'; // Import debounce from lodash
 
 // Define the structure of a category
 interface Category {
@@ -53,25 +55,30 @@ export const CategoryProvider: React.FC<CategoryContextProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   // Fetch categories from the API
-  const fetchCategoriesData = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await fetchCategoryList(); // Assumes the function returns the correct API structure
-      // Set the categories if the response is valid
-      setCategoriesList(response.categoryList || []);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-      setError("Error fetching categories");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const fetchCategoriesData = useCallback(
+    debounce(async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await fetchCategoryList(); // Assumes the function returns the correct API structure
+        setCategoriesList(response.categoryList || []); // Set the categories if the response is valid
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        setError('Error fetching categories');
+      } finally {
+        setIsLoading(false);
+      }
+    }, 300), // 300ms debounce delay
+    [] // Dependency array for useCallback
+  );
 
-  // Fetch categories on initial render
   useEffect(() => {
-    fetchCategoriesData();
-  }, []);
+    fetchCategoriesData(); // Call the debounced function
+    // Cleanup function to cancel debounced calls
+    return () => {
+      fetchCategoriesData.cancel();
+    };
+  }, [fetchCategoriesData]); // Re-run effect if debouncedFetchCategoriesData changes
 
   // Context value
   const contextValue: CategoryContextValue = {
