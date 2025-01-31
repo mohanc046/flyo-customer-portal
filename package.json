@@ -2,13 +2,12 @@
   "name": "anvogue",
   "version": "0.1.0",
   "private": true,
-"scripts": {
-  "dev": "next dev",
-  "build": "next build",
-  "start": "next start",
-  "lint": "next lint"
-},
-
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
   "dependencies": {
     "@coreui/react": "^5.4.1",
     "@phosphor-icons/react": "^2.0.14",
@@ -19,6 +18,7 @@
     "axios": "^1.7.9",
     "framer-motion": "^10.17.4",
     "lodash": "^4.17.21",
+    "lottie-react": "^2.4.1",
     "next": "14.0.3",
     "nprogress": "^0.2.0",
     "rc-slider": "^10.5.0",
@@ -37,6 +37,7 @@
     "swiper": "^11.0.4"
   },
   "devDependencies": {
+    "@types/lodash": "^4.17.15",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

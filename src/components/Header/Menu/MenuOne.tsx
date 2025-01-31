@@ -18,6 +18,11 @@ interface Props {
   props: string;
 }
 
+interface NavOption {
+  name: string;
+  path: string;
+}
+
 const MenuOne: React.FC<Props> = ({ props }) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -25,6 +30,10 @@ const MenuOne: React.FC<Props> = ({ props }) => {
   const { openLoginPopup, handleLoginPopup } = useLoginPopup();
   const { openMenuMobile, handleMenuMobile } = useMenuMobile();
   const [openSubNavMobile, setOpenSubNavMobile] = useState<number | null>(null);
+  const [navOptions, setNavOptions] = useState<NavOption[]>([
+    { name: "Home", path: `/` },
+    { name: "Login", path: "/login" }
+  ]);
   const { openModalCart } = useModalCartContext();
   const { cartState } = useCart();
   const { openModalWishlist } = useModalWishlistContext();
@@ -35,15 +44,16 @@ const MenuOne: React.FC<Props> = ({ props }) => {
 
   const { storeData } = useStore();
 
-  const NAV_ITEMS = [
-    { name: "Home", path: `/` },
-    { name: "Orders", path: "/orders" },
-    { name: "Cart", path: "/cart" },
-    {
-      name: isUserLoggedIn() ? "Logout" : "Login",
-      path: isUserLoggedIn() ? "/logout" : "/login",
-    },
-  ];
+  useEffect(() => {
+    if (isUserLoggedIn()) {
+      setNavOptions([
+        { name: "Home", path: `/` },
+        { name: "Orders", path: "/orders" },
+        { name: "Cart", path: "/cart" },
+        { name: "Logout", path: "/logout" },
+      ])
+    }
+  }, [isUserLoggedIn()])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -81,7 +91,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
               <div className="heading4">{businessName}</div>
               <div className="menu-main h-full max-lg:hidden">
                 <ul className="flex items-center gap-8 h-full">
-                  {NAV_ITEMS.map((item, index) => (
+                  {navOptions.map((item, index) => (
                     <li className="h-full relative" key={index}>
                       <Link
                         href={item.path}
@@ -163,7 +173,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
               </div>
               <div className="list-nav mt-6">
                 <ul>
-                  {NAV_ITEMS.map((item, index) => (
+                  {navOptions.map((item, index) => (
                     <li
                       key={index}
                       className={`mt-5 ${

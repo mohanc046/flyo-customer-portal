@@ -9,6 +9,7 @@ import React, {
 } from "react";
 import { fetchPlacedOrders } from "@/utils/api.service";
 import { useStore } from "@/context/StoreContext";
+import { getDomainName } from "@/utils/utils";
 
 // Define Types
 interface Order {
@@ -41,7 +42,7 @@ export const OrdersProvider: React.FC<{ children: ReactNode }> = ({
     setLoading(true);
     try {
       const fetchedOrders = await fetchPlacedOrders(
-        storeData?.store?.businessName || ""
+        getDomainName() || ""
       );
       setOrders(fetchedOrders);
     } catch (error) {
@@ -56,10 +57,10 @@ export const OrdersProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   useEffect(() => {
-    if (storeData?.store?.businessName) {
+    if (getDomainName()) {
       loadOrders();
     }
-  }, [storeData?.store?.businessName]);
+  }, [getDomainName()]);
 
   return (
     <OrdersContext.Provider

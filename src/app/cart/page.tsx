@@ -51,6 +51,8 @@ const Cart = () => {
   let [applyCode, setApplyCode] = useState<number>(0);
 
   cartState.cartArray.map((item) => (totalCart += item.price * item.quantity));
+  const cardProducts = _.get(cartState, 'cartArray', []);
+  const isCartEmpty = _.isEmpty(cardProducts);
 
   const handleApplyCode = (minValue: number, discount: number) => {
     if (totalCart > minValue) {
@@ -312,8 +314,10 @@ const Cart = () => {
                 </div>
                 <div className="block-button flex flex-col items-center gap-y-4 mt-5">
                   <div
-                    className="checkout-btn button-main text-center w-full"
-                    onClick={redirectToCheckout}
+                    aria-disabled={isCartEmpty}
+                    className={`checkout-btn button-main text-center w-full ${isCartEmpty ? "disabled" : ""
+                      }`}
+                    onClick={!isCartEmpty ? redirectToCheckout : undefined}
                   >
                     Process To Checkout
                   </div>

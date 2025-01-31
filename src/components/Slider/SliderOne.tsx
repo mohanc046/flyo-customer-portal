@@ -9,6 +9,7 @@ import { useStore } from "@/context/StoreContext";
 import ImgRenderer from "../ImgOrVideoRenderer/ImgRenderer";
 import Image from "next/image";
 import { config } from "../../config";
+import { Spinner } from "@/app/spinner";
 
 const SliderOne = () => {
   const { banners, isLoading } = useStore();
@@ -20,16 +21,12 @@ const SliderOne = () => {
 
   return (
     <div className="slider-block style-one w-full ">
-      <div className="slider-main h-full w-full">
-        {isLoading ? (
-          <div className="flex justify-center items-center h-full h-[500px]">
-            <p className="text-lg font-semibold">Loading banners...</p>
-          </div>
-        ) : (
+      {isLoading ? <Spinner /> :
+        <div className="slider-main h-full w-full">
           <Swiper
             spaceBetween={0}
             slidesPerView={1}
-            loop={true}
+            loop={validBanners.length >= 3} // Enable loop only if there are enough slides
             pagination={{ clickable: true }}
             modules={[Pagination, Autoplay]}
             className="h-full relative"
@@ -51,21 +48,23 @@ const SliderOne = () => {
                 </SwiperSlide>
               ))
             ) : (
-              <div className="slider-item h-full w-full relative lg:h-[75vh]">
-                {!isLoading && (
-                  <Image
-                    src={config.BANNER_PLACEHOLDER}
-                    height={500}
-                    className="h-full w-full object-cover"
-                    width={1500}
-                    alt="apple"
-                  />
-                )}
-              </div>
+              <SwiperSlide>
+                <div className="slider-item h-full w-full relative lg:h-[75vh]">
+                  {!isLoading && (
+                    <Image
+                      src={config.BANNER_PLACEHOLDER}
+                      height={500}
+                      className="h-full w-full object-cover"
+                      width={1500}
+                      alt="apple"
+                    />
+                  )}
+                </div>
+              </SwiperSlide>
             )}
           </Swiper>
-        )}
-      </div>
+        </div>
+      }
     </div>
   );
 };

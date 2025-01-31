@@ -9,6 +9,7 @@ import React, {
 } from "react";
 import { ProductType2 } from "@/type/ProductType"; // Assuming ProductType2 is defined elsewhere
 import { fetchProducts } from "@/utils/api.service"; // Assuming `fetchProducts` is your API function
+import { debounce, DebouncedFunc } from 'lodash';
 
 interface ProductContextProps {
   children: ReactNode;
@@ -26,7 +27,7 @@ interface PayloadType {
 
 interface ProductContextValue {
   products: ProductType2[];
-  fetchProductsData: () => void;
+  fetchProductsData: DebouncedFunc<(payload: PayloadType) => Promise<void>>; // Use DebouncedFunc type
   updatePayload: (newPayload: Partial<PayloadType>) => void; // Use PayloadType here
   getProductByID: (id: string) => ProductType2 | undefined; // Function to get a product by ID
 }
@@ -57,14 +58,14 @@ export const ProductProvider: React.FC<ProductContextProps> = ({
     sort: -1,
   });
 
-  const fetchProductsData = async () => {
+  const fetchProductsData = debounce(async (payload) => {
     try {
       const response = await fetchProducts(payload);
       setProducts(response?.products || []);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
-  };
+  }, 500); // 300ms debounce delay
 
   const updatePayload = (newPayload: Partial<PayloadType>) => {
     setPayload((prev) => ({ ...prev, ...newPayload }));
@@ -75,8 +76,13 @@ export const ProductProvider: React.FC<ProductContextProps> = ({
   };
 
   useEffect(() => {
-    fetchProductsData();
-  }, [payload]); // Refetch products when payload changes
+    // Call the debounced function
+    fetchProductsData(payload);
+    // Cleanup function to cancel debounced calls
+    return () => {
+      fetchProductsData.cancel();
+    };
+  }, [payload]); // Re-run effect when `payload` changes
 
   const contextValue: ProductContextValue = {
     products,
