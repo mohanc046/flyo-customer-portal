@@ -19,8 +19,8 @@ export const isMobileView = () => {
 export const getServiceURL = () => {
   const IS_LOCALHOST = window.location.hostname.includes("localhost");
   const SERVICE_URL = IS_LOCALHOST
-    ? "https://flyoapi.afras.in/v1"
-    : "https://flyoapi.afras.in/v1";
+    ? process.env.NEXT_PUBLIC_SERVICE_API
+    : process.env.NEXT_PUBLIC_SERVICE_API;
 
   return SERVICE_URL;
 };
