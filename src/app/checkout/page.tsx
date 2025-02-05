@@ -101,7 +101,7 @@ const CheckoutForm = ({ setClientSceret }) => {
         elements,
         clientSecret: client_secret,
         confirmParams: {
-          return_url: `${window.location.origin}/`,
+          return_url: `${window.location.origin}/orders`,
         },
       });
       setLoading(false);
@@ -128,7 +128,7 @@ const CheckoutForm = ({ setClientSceret }) => {
     <div className="cart-block md:py-20 py-10">
       <div className="container">
         <div className="content-main flex justify-between">
-          <div className="left w-1/2">
+          <div className="left lg:w-1/2">
             <div className="information">
               <div className="heading5">Shipping Address</div>
               <div className="form-checkout mt-5">
@@ -227,7 +227,7 @@ const CheckoutForm = ({ setClientSceret }) => {
               </div>
             </div>
           </div>
-          <div className="right w-5/12">
+          <div className="right lg:w-12/12 mb-5">
             <div className="checkout-block">
               <div className="heading5 pb-3">Your Order</div>
               <div className="list-product-checkout">

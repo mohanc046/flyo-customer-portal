@@ -8,7 +8,7 @@ import Breadcrumb from "@/components/Breadcrumb/Breadcrumb";
 import Footer from "@/components/Footer/Footer";
 import ImgOrVideoRenderer from "@/components/ImgOrVideoRenderer/ImgOrVideoRenderer";
 import { useOrders } from "@/context/OrdersContext";
-import _ from 'lodash';
+import _ from "lodash";
 
 const Orders = () => {
   const { orders = [], loading = false } = useOrders();
@@ -51,7 +51,7 @@ const Orders = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="list-product-main w-full mt-3">
+                  <div className="list-product-main w-full mt-3 overflow-x-auto">
                     {loading ? (
                       <p className="text-button pt-3">Loading orders...</p>
                     ) : orders.length === 0 ? (
@@ -59,7 +59,7 @@ const Orders = () => {
                     ) : (
                       orders.map((order) => (
                         <div
-                          className="item flex md:mt-7 md:pb-7 mt-5 pb-5 border-b border-line w-full"
+                          className="item flex md:mt-7 md:pb-7 mt-5 pb-5 border-b border-line w-full min-w-[600px]"
                           key={order._id}
                         >
                           <div className="w-1/3">

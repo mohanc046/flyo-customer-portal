@@ -34,6 +34,8 @@
     @media (max-width:767.98px) {
         .content-main {
             overflow-x: auto;
+            display: flex;
+            flex-direction: column;
 
             >div {
                 max-width: 700px;
