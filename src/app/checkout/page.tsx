@@ -5,17 +5,27 @@ import MenuOne from "@/components/Header/Menu/MenuOne";
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb";
 import Footer from "@/components/Footer/Footer";
 import { useCart } from "@/context/CartContext";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import ImgOrVideoRenderer from "@/components/ImgOrVideoRenderer/ImgOrVideoRenderer";
-import { createOrder } from "@/utils/api.service";
+import {
+  PaymentElement,
+  Elements,
+  useStripe,
+  useElements,
+} from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { createOrder, getStripePublishableKey } from "@/utils/api.service";
 import { useStore } from "@/context/StoreContext";
 import { Spinner } from "@phosphor-icons/react";
 
-const CheckoutForm = () => {
-  const router = useRouter();
+const CheckoutForm = ({ setClientSceret }) => {
+  const stripe = useStripe();
+  const elements = useElements();
   const searchParams = useSearchParams();
   const { cartState, setLoading } = useCart();
   const { storeData } = useStore();
+  // const router = useRouter();
+
   const discount = Number(searchParams.get("discount") || 0);
   const ship = Number(searchParams.get("ship") || 0);
   const [shippingAddress, setShippingAddress] = useState({
@@ -51,8 +61,20 @@ const CheckoutForm = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    if (!stripe || !elements) {
+      console.error("Stripe has not loaded yet.");
+      return;
+    }
+
     try {
       setLoading(true);
+      // Trigger form validation in Stripe elements
+      const validation = await elements.submit();
+      if (validation.error) {
+        setLoading(false);
+        console.error("Validation error:", validation.error.message);
+        return;
+      }
 
       // Extract products from cartState
       const products = cartState.cartArray.map((item) => ({
@@ -72,16 +94,29 @@ const CheckoutForm = () => {
         storeId
       );
 
-      if (client_secret) {
-        router.push(`/payment?client_secret=${client_secret}`);
+      setClientSceret(client_secret);
+
+      // Confirm payment using Stripe
+      const { error } = await stripe.confirmPayment({
+        elements,
+        clientSecret: client_secret,
+        confirmParams: {
+          return_url: `${window.location.origin}/orders`,
+        },
+      });
+      setLoading(false);
+
+      if (error) {
+        console.error("Payment error:", error.message);
       } else {
-        router.push(
-          `/payment?client_secret=${"pi_3Qht0VETfYJwWWxs06oFcVfK_secret_wah12ufki8yPwfaTYJtykWuiR"}`
-        );
+        console.log("Payment successful");
+        // router.push(
+        //   `${window.location.origin}/?store=${storeData?.store?.businessName}`
+        // );
       }
     } catch (error: any) {
       console.error(
-        "Error create order:",
+        "Error submitting payment:",
         error.response?.data || error.message
       );
     } finally {
@@ -184,7 +219,7 @@ const CheckoutForm = () => {
                       {cartState.isLoading ? (
                         <Spinner className="spinner" />
                       ) : (
-                        "Pay Now"
+                        "Payment"
                       )}
                     </button>
                   </div>
@@ -267,6 +302,33 @@ const CheckoutForm = () => {
 };
 
 const Checkout = () => {
+  const [stripePromise, setStripePromise] = useState<any>(null);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchKeyAndInitializeStripe = async () => {
+      try {
+        const stripeKey = await fetchStripeKey();
+        const stripe = loadStripe(stripeKey);
+        setStripePromise(stripe);
+      } catch (error) {
+        console.error("Error initializing Stripe:", error);
+      }
+    };
+
+    fetchKeyAndInitializeStripe();
+  }, []);
+
+  const fetchStripeKey = async () => {
+    try {
+      const response = await getStripePublishableKey();
+      return response.configuration.publishableKey;
+    } catch (error) {
+      console.error("Error fetching Stripe publishable key:", error);
+      throw error;
+    }
+  };
+
   return (
     <>
       <TopNavOne
@@ -279,7 +341,17 @@ const Checkout = () => {
       </div>
       <div className="cart-block md:py-20 py-10">
         <div className="container">
-          <CheckoutForm />
+          <Elements
+            stripe={stripePromise}
+            options={{
+              clientSecret:
+                clientSecret ||
+                "pi_3Qht0VETfYJwWWxs06oFcVfK_secret_wah12ufki8yPwfaTYJtykWuiR",
+            }}
+          >
+            <PaymentElement />
+            <CheckoutForm setClientSceret={setClientSecret} />
+          </Elements>
         </div>
       </div>
       <Footer />

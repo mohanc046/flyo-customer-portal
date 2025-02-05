@@ -40,7 +40,7 @@ const PaymentForm = ({ clientSecret }: { clientSecret: string }) => {
         elements,
         clientSecret: clientSecret,
         confirmParams: {
-          return_url: `${window.location.origin}/orders`,
+          return_url: `${window.location.origin}/payment`,
         },
       });
       setLoading(false);
