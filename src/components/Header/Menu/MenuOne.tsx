@@ -32,7 +32,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
   const [openSubNavMobile, setOpenSubNavMobile] = useState<number | null>(null);
   const [navOptions, setNavOptions] = useState<NavOption[]>([
     { name: "Home", path: `/` },
-    { name: "Login", path: "/login" },
+    { name: "Login", path: "/login" }
   ]);
   const { openModalCart } = useModalCartContext();
   const { cartState } = useCart();
@@ -51,9 +51,9 @@ const MenuOne: React.FC<Props> = ({ props }) => {
         { name: "Orders", path: "/orders" },
         { name: "Cart", path: "/cart" },
         { name: "Logout", path: "/logout" },
-      ]);
+      ])
     }
-  }, [isUserLoggedIn()]);
+  }, [isUserLoggedIn()])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -107,6 +107,13 @@ const MenuOne: React.FC<Props> = ({ props }) => {
               </div>
             </div>
             <div className="right flex gap-12">
+              <div
+                className="max-md:hidden search-icon flex items-center cursor-pointer relative"
+                onClick={openModalSearch}
+              >
+                <Icon.MagnifyingGlass size={24} color="black" />
+                <div className="line absolute bg-line w-px h-6 -right-6"></div>
+              </div>
               <div className="list-action flex items-center gap-4">
                 <div
                   className="user-icon flex items-center justify-center cursor-pointer"

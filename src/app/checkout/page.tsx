@@ -101,7 +101,7 @@ const CheckoutForm = ({ setClientSceret }) => {
         elements,
         clientSecret: client_secret,
         confirmParams: {
-          return_url: `${window.location.origin}/orders`,
+          return_url: `${window.location.origin}/`,
         },
       });
       setLoading(false);
