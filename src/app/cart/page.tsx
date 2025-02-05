@@ -11,10 +11,12 @@ import { useCart } from "@/context/CartContext";
 import { countdownTime } from "@/store/countdownTime";
 import ImgOrVideoRenderer from "@/components/ImgOrVideoRenderer/ImgOrVideoRenderer";
 import { isUserLoggedIn } from "@/utils/utils";
+import { useToaster } from "@/context/ToasterContext";
 
 const Cart = () => {
   const [timeLeft, setTimeLeft] = useState(countdownTime());
   const router = useRouter();
+  const { showToast } = useToaster();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -51,7 +53,7 @@ const Cart = () => {
   let [applyCode, setApplyCode] = useState<number>(0);
 
   cartState.cartArray.map((item) => (totalCart += item.price * item.quantity));
-  const cardProducts = _.get(cartState, 'cartArray', []);
+  const cardProducts = _.get(cartState, "cartArray", []);
   const isCartEmpty = _.isEmpty(cardProducts);
 
   const handleApplyCode = (minValue: number, discount: number) => {
@@ -80,7 +82,6 @@ const Cart = () => {
     const user = isUserLoggedIn();
 
     // call the order creation API ...
-
 
     if (!_.isEmpty(user)) {
       router.push(`/checkout?discount=${discountCart}&ship=${shipCart}`);
@@ -315,8 +316,9 @@ const Cart = () => {
                 <div className="block-button flex flex-col items-center gap-y-4 mt-5">
                   <div
                     aria-disabled={isCartEmpty}
-                    className={`checkout-btn button-main text-center w-full ${isCartEmpty ? "disabled" : ""
-                      }`}
+                    className={`checkout-btn button-main text-center w-full ${
+                      isCartEmpty ? "disabled" : ""
+                    }`}
                     onClick={!isCartEmpty ? redirectToCheckout : undefined}
                   >
                     Process To Checkout

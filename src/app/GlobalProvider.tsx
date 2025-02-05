@@ -12,35 +12,38 @@ import { CategoryProvider } from "@/context/CategoryContext";
 import { StoreProvider } from "@/context/StoreContext";
 import { LoginProvider } from "@/context/LoginContext";
 import { OrdersProvider } from "@/context/OrdersContext";
+import { ToasterProvider } from "@/context/ToasterContext";
 
 const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   return (
     <StoreProvider>
-      <OrdersProvider>
-        <CartProvider>
-          <ModalCartProvider>
-            <WishlistProvider>
-              <ModalWishlistProvider>
-                <CompareProvider>
-                  <ModalCompareProvider>
-                    <ModalSearchProvider>
-                      <ModalQuickviewProvider>
-                        <ProductProvider>
-                          <CategoryProvider>
-                            <LoginProvider>{children}</LoginProvider>
-                          </CategoryProvider>
-                        </ProductProvider>
-                      </ModalQuickviewProvider>
-                    </ModalSearchProvider>
-                  </ModalCompareProvider>
-                </CompareProvider>
-              </ModalWishlistProvider>
-            </WishlistProvider>
-          </ModalCartProvider>
-        </CartProvider>
-      </OrdersProvider>
+      <ToasterProvider>
+        <OrdersProvider>
+          <CartProvider>
+            <ModalCartProvider>
+              <WishlistProvider>
+                <ModalWishlistProvider>
+                  <CompareProvider>
+                    <ModalCompareProvider>
+                      <ModalSearchProvider>
+                        <ModalQuickviewProvider>
+                          <ProductProvider>
+                            <CategoryProvider>
+                              <LoginProvider>{children}</LoginProvider>
+                            </CategoryProvider>
+                          </ProductProvider>
+                        </ModalQuickviewProvider>
+                      </ModalSearchProvider>
+                    </ModalCompareProvider>
+                  </CompareProvider>
+                </ModalWishlistProvider>
+              </WishlistProvider>
+            </ModalCartProvider>
+          </CartProvider>
+        </OrdersProvider>
+      </ToasterProvider>
     </StoreProvider>
   );
 };
