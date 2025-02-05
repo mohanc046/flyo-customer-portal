@@ -10,6 +10,7 @@ import ModalCompare from "@/components/Modal/ModalCompare";
 import CountdownTimeType from "@/type/CountdownType";
 import { countdownTime } from "@/store/countdownTime";
 import DynamicTitle from "./DynamicTitle";
+import Toaster from "@/components/Toaster/Toaster";
 
 const serverTimeLeft: CountdownTimeType = countdownTime();
 
@@ -36,6 +37,7 @@ export default function RootLayout({
           <ModalSearch />
           <ModalQuickview />
           <ModalCompare />
+          <Toaster />
         </body>
       </html>
     </GlobalProvider>

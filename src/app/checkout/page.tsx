@@ -17,6 +17,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { createOrder, getStripePublishableKey } from "@/utils/api.service";
 import { useStore } from "@/context/StoreContext";
 import { Spinner } from "@phosphor-icons/react";
+import { useToaster } from "@/context/ToasterContext";
 
 const CheckoutForm = ({ setClientSceret }) => {
   const stripe = useStripe();
@@ -24,6 +25,7 @@ const CheckoutForm = ({ setClientSceret }) => {
   const searchParams = useSearchParams();
   const { cartState, setLoading } = useCart();
   const { storeData } = useStore();
+  const { showToast } = useToaster();
   // const router = useRouter();
 
   const discount = Number(searchParams.get("discount") || 0);
@@ -108,11 +110,9 @@ const CheckoutForm = ({ setClientSceret }) => {
 
       if (error) {
         console.error("Payment error:", error.message);
+        showToast("Payment Failed", "error");
       } else {
         console.log("Payment successful");
-        // router.push(
-        //   `${window.location.origin}/?store=${storeData?.store?.businessName}`
-        // );
       }
     } catch (error: any) {
       console.error(
