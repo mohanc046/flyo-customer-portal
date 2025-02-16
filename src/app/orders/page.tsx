@@ -16,19 +16,20 @@ const Orders = () => {
   const router = useRouter();
   const { showToast } = useToaster();
   const searchParams = useSearchParams();
-  const status = searchParams.get("redirect_status") || null;
-  const toastShown = useRef(false); // Track if toast has been shown
+  // const status = searchParams.get("redirect_status") || null;
+  // const toastShown = useRef(false); // Track if toast has been shown
 
-  useEffect(() => {
-    if (status === "succeeded" && !toastShown.current) {
-      showToast("Order Placed", "success");
-      toastShown.current = true; // Mark as shown to prevent duplicate
-    }
-  }, [status]);
+  // useEffect(() => {
+  //   if (status === "succeeded" && !toastShown.current) {
+  //     showToast("Order Placed", "success");
+  //     toastShown.current = true; // Mark as shown to prevent duplicate
+  //   }
+  // }, [status]);
 
   const redirectToOrderDetails = (orderId: string) => {
     router.push(`/orderDetails/?id=${orderId}`);
   };
+
   return (
     <>
       <div id="header" className="relative w-full">
