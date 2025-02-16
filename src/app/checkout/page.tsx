@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import TopNavOne from "@/components/Header/TopNav/TopNavOne";
 import MenuOne from "@/components/Header/Menu/MenuOne";
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb";
@@ -26,7 +26,14 @@ const CheckoutForm = ({ setClientSceret }) => {
   const { cartState, setLoading } = useCart();
   const { storeData } = useStore();
   const { showToast } = useToaster();
-  // const router = useRouter();
+  const status = searchParams.get("redirect_status") || null;
+  const toastShown = useRef(false);
+  useEffect(() => {
+    if (status === "succeeded" && !toastShown.current) {
+      showToast("Order Placed", "success");
+      toastShown.current = true; // Mark as shown to prevent duplicate
+    }
+  }, [status]);
 
   const discount = Number(searchParams.get("discount") || 0);
   const ship = Number(searchParams.get("ship") || 0);
@@ -103,9 +110,10 @@ const CheckoutForm = ({ setClientSceret }) => {
         elements,
         clientSecret: client_secret,
         confirmParams: {
-          return_url: `${window.location.origin}/orders`,
+          return_url: window.location.href, // Redirect to the current page
         },
       });
+
       setLoading(false);
 
       if (error) {
