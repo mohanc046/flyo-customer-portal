@@ -7,24 +7,17 @@ import MenuOne from "@/components/Header/Menu/MenuOne";
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb";
 import Footer from "@/components/Footer/Footer";
 import ImgOrVideoRenderer from "@/components/ImgOrVideoRenderer/ImgOrVideoRenderer";
-import { useOrders } from "@/context/OrdersContext";
+import { loadOrders, useOrders } from "@/context/OrdersContext";
 import _ from "lodash";
 import { useToaster } from "@/context/ToasterContext";
 
 const Orders = () => {
-  const { orders = [], loading = false } = useOrders();
+  const { orders = [], reloadOrders, loading = false } = useOrders();
   const router = useRouter();
-  const { showToast } = useToaster();
-  const searchParams = useSearchParams();
-  // const status = searchParams.get("redirect_status") || null;
-  // const toastShown = useRef(false); // Track if toast has been shown
 
-  // useEffect(() => {
-  //   if (status === "succeeded" && !toastShown.current) {
-  //     showToast("Order Placed", "success");
-  //     toastShown.current = true; // Mark as shown to prevent duplicate
-  //   }
-  // }, [status]);
+  useEffect(() => {
+    reloadOrders();
+  }, [router]);
 
   const redirectToOrderDetails = (orderId: string) => {
     router.push(`/orderDetails/?id=${orderId}`);
