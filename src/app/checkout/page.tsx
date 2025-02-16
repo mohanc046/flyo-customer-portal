@@ -18,8 +18,10 @@ import { createOrder, getStripePublishableKey } from "@/utils/api.service";
 import { useStore } from "@/context/StoreContext";
 import { Spinner } from "@phosphor-icons/react";
 import { useToaster } from "@/context/ToasterContext";
+import { useRouter } from "next/navigation";
 
 const CheckoutForm = ({ setClientSceret }) => {
+  const router = useRouter();
   const stripe = useStripe();
   const elements = useElements();
   const searchParams = useSearchParams();
@@ -109,9 +111,7 @@ const CheckoutForm = ({ setClientSceret }) => {
       const { error } = await stripe.confirmPayment({
         elements,
         clientSecret: client_secret,
-        confirmParams: {
-          return_url: window.location.href, // Redirect to the current page
-        },
+        redirect: "if_required",
       });
 
       setLoading(false);
@@ -120,6 +120,10 @@ const CheckoutForm = ({ setClientSceret }) => {
         console.error("Payment error:", error.message);
         showToast("Payment Failed", "error");
       } else {
+        showToast("Order Placed", "success");
+        setTimeout(() => {
+          router.push(`/orders`);
+        }, 2000);
         console.log("Payment successful");
       }
     } catch (error: any) {

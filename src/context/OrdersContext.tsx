@@ -23,12 +23,28 @@ interface Order {
 interface OrdersContextProps {
   orders: Order[];
   loading: boolean;
-  reloadOrders: () => void; // Function to reload orders manually
+  reloadOrders: () => Promise<void>; // Function to reload orders manually
   getOrderByID: (id: string) => Order | undefined; // Function to get order by ID
 }
 
 // Create Context
 const OrdersContext = createContext<OrdersContextProps | undefined>(undefined);
+
+// Independent `loadOrders` Function
+export const loadOrders = async (
+  setOrders: React.Dispatch<React.SetStateAction<Order[]>>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>
+): Promise<void> => {
+  setLoading(true);
+  try {
+    const fetchedOrders = await fetchPlacedOrders(getDomainName() || "");
+    setOrders(fetchedOrders);
+  } catch (error) {
+    console.error("Failed to fetch orders:", error);
+  } finally {
+    setLoading(false);
+  }
+};
 
 // Context Provider
 export const OrdersProvider: React.FC<{ children: ReactNode }> = ({
@@ -38,33 +54,25 @@ export const OrdersProvider: React.FC<{ children: ReactNode }> = ({
   const [loading, setLoading] = useState<boolean>(true);
   const { storeData } = useStore();
 
-  const loadOrders = async () => {
-    setLoading(true);
-    try {
-      const fetchedOrders = await fetchPlacedOrders(
-        getDomainName() || ""
-      );
-      setOrders(fetchedOrders);
-    } catch (error) {
-      console.error("Failed to fetch orders:", error);
-    } finally {
-      setLoading(false);
+  // Load orders when the context is initialized
+  useEffect(() => {
+    if (getDomainName()) {
+      loadOrders(setOrders, setLoading);
     }
-  };
+  }, [getDomainName()]);
 
   const getOrderByID = (id: string): Order | undefined => {
     return orders.find((order) => order._id === id); // Find the order with the matching ID
   };
 
-  useEffect(() => {
-    if (getDomainName()) {
-      loadOrders();
-    }
-  }, [getDomainName()]);
-
   return (
     <OrdersContext.Provider
-      value={{ orders, loading, reloadOrders: loadOrders, getOrderByID }}
+      value={{
+        orders,
+        loading,
+        reloadOrders: () => loadOrders(setOrders, setLoading), // Pass the same function to reload orders
+        getOrderByID,
+      }}
     >
       {children}
     </OrdersContext.Provider>
