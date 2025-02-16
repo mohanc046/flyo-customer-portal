@@ -231,7 +231,7 @@ const CheckoutForm = ({ setClientSceret }) => {
                       {cartState.isLoading ? (
                         <Spinner className="spinner" />
                       ) : (
-                        "Payment"
+                        "Proceed"
                       )}
                     </button>
                   </div>
