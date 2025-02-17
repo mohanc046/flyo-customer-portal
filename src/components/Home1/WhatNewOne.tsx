@@ -5,6 +5,7 @@ import { useProductContext } from "@/context/ProductContext";
 import { useCategoryContext } from "@/context/CategoryContext"; // Import CategoryContext
 import ProductGrid from "../Product/Components/ProductGrid";
 import { motion } from "framer-motion";
+import { Card } from "reactstrap";
 
 interface Props {
   start: number;
@@ -44,7 +45,13 @@ const WhatNewOne: React.FC<Props> = ({ start, limit, storeName }) => {
           ) : error ? (
             <div>Error loading categories</div>
           ) : (
-            <div className="menu-tab flex items-center gap-2 p-1 bg-surface rounded-2xl mt-6">
+            <div
+              className="menu-tab w-full overflow-x-auto flex gap-2 p-1 bg-surface rounded-2xl mt-6"
+              style={{
+                scrollbarWidth: "none", // For Firefox
+                msOverflowStyle: "none", // For Internet Explorer and Edge
+              }}
+            >
               {categoryList &&
                 categoryList.map((category) => {
                   const categoryKey = category.key; // Use `key` property safely
