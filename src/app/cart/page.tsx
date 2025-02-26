@@ -99,7 +99,11 @@ const Cart = () => {
       <div className="cart-block md:py-20 py-10">
         <div className="container">
           <div className="content-main flex justify-between max-xl:flex-col gap-y-8">
-            <div className="xl:w-2/3 xl:pr-3 w-full">
+            <div
+              className={`${
+                cartState?.cartArray.length > 0 ? "xl:w-2/3" : "xl:w-3/3"
+              } xl:pr-3 w-full`}
+            >
               <div className="list-product w-full sm:mt-7 mt-5">
                 <div className="w-full">
                   <div className="heading bg-surface bora-4 pt-4 pb-4">
@@ -215,117 +219,119 @@ const Cart = () => {
                 </form>
               </div>
             </div>
-            <div className="xl:w-1/3 xl:pl-12 w-full">
-              <div className="checkout-block bg-surface p-6 rounded-2xl">
-                <div className="heading5">Order Summary</div>
-                <div className="total-block py-5 flex justify-between border-b border-line">
-                  <div className="text-title">Subtotal</div>
-                  <div className="text-title">
-                    ₹<span className="total-product">{totalCart}</span>
-                    <span>.00</span>
-                  </div>
-                </div>
-                <div className="discount-block py-5 flex justify-between border-b border-line">
-                  <div className="text-title">Discounts</div>
-                  <div className="text-title">
-                    {" "}
-                    <span>-₹</span>
-                    <span className="discount">{discountCart}</span>
-                    <span>.00</span>
-                  </div>
-                </div>
-                <div className="ship-block py-5 flex justify-between border-b border-line">
-                  <div className="text-title">Shipping</div>
-                  <div className="choose-type flex gap-12">
-                    <div className="left">
-                      <div className="type">
-                        {moneyForFreeship - totalCart > 0 ? (
-                          <input
-                            id="shipping"
-                            type="radio"
-                            name="ship"
-                            disabled
-                          />
-                        ) : (
-                          <input
-                            id="shipping"
-                            type="radio"
-                            name="ship"
-                            checked={shipCart === 0}
-                            onChange={() => setShipCart(0)}
-                          />
-                        )}
-                        <label className="pl-1" htmlFor="shipping">
-                          Free Shipping:
-                        </label>
-                      </div>
-                      <div className="type mt-1">
-                        <input
-                          id="local"
-                          type="radio"
-                          name="ship"
-                          value={30}
-                          checked={shipCart === 30}
-                          onChange={() => setShipCart(30)}
-                        />
-                        <label
-                          className="text-on-surface-variant1 pl-1"
-                          htmlFor="local"
-                        >
-                          Local:
-                        </label>
-                      </div>
-                      <div className="type mt-1">
-                        <input
-                          id="flat"
-                          type="radio"
-                          name="ship"
-                          value={40}
-                          checked={shipCart === 40}
-                          onChange={() => setShipCart(40)}
-                        />
-                        <label
-                          className="text-on-surface-variant1 pl-1"
-                          htmlFor="flat"
-                        >
-                          Flat Rate:
-                        </label>
-                      </div>
-                    </div>
-                    <div className="right">
-                      <div className="ship">₹0.00</div>
-                      <div className="local text-on-surface-variant1 mt-1">
-                        ₹30.00
-                      </div>
-                      <div className="flat text-on-surface-variant1 mt-1">
-                        ₹40.00
-                      </div>
+            {cartState.cartArray.length > 0 && (
+              <div className="xl:w-1/3 xl:pl-12 w-full">
+                <div className="checkout-block bg-surface p-6 rounded-2xl">
+                  <div className="heading5">Order Summary</div>
+                  <div className="total-block py-5 flex justify-between border-b border-line">
+                    <div className="text-title">Subtotal</div>
+                    <div className="text-title">
+                      ₹<span className="total-product">{totalCart}</span>
+                      <span>.00</span>
                     </div>
                   </div>
-                </div>
-                <div className="total-cart-block pt-4 pb-4 flex justify-between">
-                  <div className="heading5">Total</div>
-                  <div className="heading5">
-                    ₹
-                    <span className="total-cart heading5">
-                      {totalCart - discountCart + shipCart}
-                    </span>
-                    <span className="heading5">.00</span>
+                  <div className="discount-block py-5 flex justify-between border-b border-line">
+                    <div className="text-title">Discounts</div>
+                    <div className="text-title">
+                      {" "}
+                      <span>-₹</span>
+                      <span className="discount">{discountCart}</span>
+                      <span>.00</span>
+                    </div>
                   </div>
-                </div>
-                <div className="block-button flex flex-col items-center gap-y-4 mt-5">
-                  <div
-                    aria-disabled={isCartEmpty}
-                    className={`checkout-btn button-main text-center w-full ${
-                      isCartEmpty ? "disabled" : ""
-                    }`}
-                    onClick={!isCartEmpty ? redirectToCheckout : undefined}
-                  >
-                    Process To Checkout
+                  <div className="ship-block py-5 flex justify-between border-b border-line">
+                    <div className="text-title">Shipping</div>
+                    <div className="choose-type flex gap-12">
+                      <div className="left">
+                        <div className="type">
+                          {moneyForFreeship - totalCart > 0 ? (
+                            <input
+                              id="shipping"
+                              type="radio"
+                              name="ship"
+                              disabled
+                            />
+                          ) : (
+                            <input
+                              id="shipping"
+                              type="radio"
+                              name="ship"
+                              checked={shipCart === 0}
+                              onChange={() => setShipCart(0)}
+                            />
+                          )}
+                          <label className="pl-1" htmlFor="shipping">
+                            Free Shipping:
+                          </label>
+                        </div>
+                        <div className="type mt-1">
+                          <input
+                            id="local"
+                            type="radio"
+                            name="ship"
+                            value={30}
+                            checked={shipCart === 30}
+                            onChange={() => setShipCart(30)}
+                          />
+                          <label
+                            className="text-on-surface-variant1 pl-1"
+                            htmlFor="local"
+                          >
+                            Local:
+                          </label>
+                        </div>
+                        <div className="type mt-1">
+                          <input
+                            id="flat"
+                            type="radio"
+                            name="ship"
+                            value={40}
+                            checked={shipCart === 40}
+                            onChange={() => setShipCart(40)}
+                          />
+                          <label
+                            className="text-on-surface-variant1 pl-1"
+                            htmlFor="flat"
+                          >
+                            Flat Rate:
+                          </label>
+                        </div>
+                      </div>
+                      <div className="right">
+                        <div className="ship">₹0.00</div>
+                        <div className="local text-on-surface-variant1 mt-1">
+                          ₹30.00
+                        </div>
+                        <div className="flat text-on-surface-variant1 mt-1">
+                          ₹40.00
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="total-cart-block pt-4 pb-4 flex justify-between">
+                    <div className="heading5">Total</div>
+                    <div className="heading5">
+                      ₹
+                      <span className="total-cart heading5">
+                        {totalCart - discountCart + shipCart}
+                      </span>
+                      <span className="heading5">.00</span>
+                    </div>
+                  </div>
+                  <div className="block-button flex flex-col items-center gap-y-4 mt-5">
+                    <div
+                      aria-disabled={isCartEmpty}
+                      className={`checkout-btn button-main text-center w-full ${
+                        isCartEmpty ? "disabled" : ""
+                      }`}
+                      onClick={!isCartEmpty ? redirectToCheckout : undefined}
+                    >
+                      Proceed To Checkout
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

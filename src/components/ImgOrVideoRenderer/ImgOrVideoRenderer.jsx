@@ -14,6 +14,7 @@ export default function ImgOrVideoRenderer(props) {
     videoStyles,
     muted = true,
     objectFit,
+    showControls,
   } = props;
   return (
     <>
@@ -34,6 +35,7 @@ export default function ImgOrVideoRenderer(props) {
           className={className}
           onClickHanlder={onClick}
           src={src}
+          showControls={showControls}
           width={width}
           height={height}
           styles={videoStyles}

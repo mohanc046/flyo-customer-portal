@@ -3,6 +3,7 @@
 import { getServiceURL } from "@/utils/utils";
 import axios from "axios";
 import React, { createContext, useContext, useState, ReactNode } from "react";
+import { useToaster } from "./ToasterContext";
 
 // Define the context types
 interface LoginContextProps {
@@ -34,6 +35,7 @@ const LoginContext = createContext<LoginContextProps | undefined>(undefined);
 
 // Provide the context to children components
 export const LoginProvider = ({ children }: { children: ReactNode }) => {
+  const { showToast } = useToaster();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Google Login Function
@@ -139,10 +141,12 @@ export const LoginProvider = ({ children }: { children: ReactNode }) => {
       if (statusCode === 200) {
         localStorage.setItem("access_token", authToken);
         localStorage.setItem("userInfo", JSON.stringify(userInfo));
+        showToast("Login Successfull", "success");
 
         navigateToDashboard();
       } else {
         console.error("OTP verification failed:", message);
+        showToast("OTP not matched", "error");
       }
     } catch (error) {
       console.error("An error occurred during OTP verification:", error);
