@@ -99,6 +99,7 @@ const Default: React.FC<Props> = ({ productId }) => {
                       alt="prd-img"
                       className="w-full aspect-[3/4] object-contain"
                       muted={false}
+                      showControls
                     />
                   </SwiperSlide>
                 ))}

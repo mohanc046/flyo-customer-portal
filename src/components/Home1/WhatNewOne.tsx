@@ -40,7 +40,7 @@ const WhatNewOne: React.FC<Props> = ({ start, limit, storeName }) => {
         <div className="heading flex flex-col items-center text-center">
           <div className="heading3">What&apos;s new</div>
 
-          {isLoading ? (
+          {/* {isLoading ? (
             <div>Loading categories...</div>
           ) : error ? (
             <div>Error loading categories</div>
@@ -78,7 +78,7 @@ const WhatNewOne: React.FC<Props> = ({ start, limit, storeName }) => {
                   );
                 })}
             </div>
-          )}
+          )} */}
         </div>
 
         <div className="list-product hide-product-sold grid lg:grid-cols-4 grid-cols-2 sm:gap-[30px] gap-[20px] md:mt-10 mt-6">
