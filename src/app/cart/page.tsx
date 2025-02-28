@@ -49,10 +49,14 @@ const Cart = () => {
   let moneyForFreeship = 150;
   let [totalCart, setTotalCart] = useState<number>(0);
   let [discountCart, setDiscountCart] = useState<number>(0);
-  let [shipCart, setShipCart] = useState<number>(30);
+  let [shipCart, setShipCart] = useState<number>(0);
   let [applyCode, setApplyCode] = useState<number>(0);
 
   cartState.cartArray.map((item) => (totalCart += item.price * item.quantity));
+  cartState.cartArray.map(
+    (item) =>
+      (discountCart += (item.price - item.discountPrice) * item.quantity)
+  );
   const cardProducts = _.get(cartState, "cartArray", []);
   const isCartEmpty = _.isEmpty(cardProducts);
 
@@ -108,19 +112,22 @@ const Cart = () => {
                 <div className="w-full">
                   <div className="heading bg-surface bora-4 pt-4 pb-4">
                     <div className="flex">
-                      <div className="w-1/2">
+                      <div className="w-[50%]">
                         <div className="text-button text-center">Products</div>
                       </div>
-                      <div className="w-1/12">
+                      <div className="w-[15%]">
                         <div className="text-button text-center">Price</div>
                       </div>
-                      <div className="w-1/6">
+                      <div className="w-[15%]">
                         <div className="text-button text-center">Quantity</div>
                       </div>
-                      <div className="w-1/6">
+                      <div className="w-[15%]">
                         <div className="text-button text-center">
                           Total Price
                         </div>
+                      </div>
+                      <div className="w-[5%]">
+                        <div className="text-button text-center">Remove</div>
                       </div>
                     </div>
                   </div>
@@ -133,31 +140,44 @@ const Cart = () => {
                           className="item flex md:mt-7 md:pb-7 mt-5 pb-5 border-b border-line w-full"
                           key={product._id}
                         >
-                          <div className="w-1/2">
-                            <div className="flex items-center gap-6">
-                              <div className="bg-img md:w-[100px] w-20 aspect-[3/4]">
-                                <ImgOrVideoRenderer
-                                  src={product.images[0]}
-                                  width={1000}
-                                  height={1000}
-                                  alt={product.productName}
-                                  className="w-full h-full object-cover rounded-lg"
-                                />
+                          {/* Product Details */}
+                          <div className="w-[50%] flex items-center gap-6">
+                            <div className="bg-img md:w-[100px] w-20 aspect-[3/4]">
+                              <ImgOrVideoRenderer
+                                src={product.images[0]}
+                                width={1000}
+                                height={1000}
+                                alt={product.productName}
+                                className="w-full h-full object-cover rounded-lg"
+                              />
+                            </div>
+                            <div>
+                              <div className="text-title w-[140px] overflow-hidden text-ellipsis whitespace-nowrap">
+                                {product.productName}
                               </div>
-                              <div>
-                                <div className="text-title w-[140px] overflow-hidden text-ellipsis whitespace-nowrap">
-                                  {product.productName}
+                            </div>
+                          </div>
+
+                          {/* Price Section */}
+                          <div className="w-[15%] flex flex-col items-center justify-center">
+                            {product.discountPrice ? (
+                              <>
+                                <div className="text-title text-center line-through opacity-60">
+                                  ₹{product.price}.00
                                 </div>
-                                <div className="list-select mt-3"></div>
+                                <div className="text-title text-center text-red-600 font-semibold">
+                                  ₹{product.discountPrice}.00
+                                </div>
+                              </>
+                            ) : (
+                              <div className="text-title text-center">
+                                ₹{product.price}.00
                               </div>
-                            </div>
+                            )}
                           </div>
-                          <div className="w-1/12 price flex items-center justify-center">
-                            <div className="text-title text-center">
-                              ₹{product.price}.00
-                            </div>
-                          </div>
-                          <div className="w-1/6 flex items-center justify-center">
+
+                          {/* Quantity Section */}
+                          <div className="w-[15%] flex items-center justify-center">
                             <div className="quantity-block bg-surface md:p-3 p-2 flex items-center justify-between rounded-lg border border-line md:w-[100px] flex-shrink-0 w-20">
                               <Icon.Minus
                                 onClick={() => {
@@ -186,17 +206,23 @@ const Cart = () => {
                               />
                             </div>
                           </div>
-                          <div className="w-1/6 flex total-price items-center justify-center">
-                            <div className="text-title text-center">
-                              ₹{product.quantity * product.price}.00
+
+                          {/* Total Price */}
+                          <div className="w-[15%] flex items-center justify-center">
+                            <div className="text-title text-center font-semibold">
+                              ₹
+                              {(
+                                product.quantity *
+                                (product.discountPrice ?? product.price)
+                              ).toFixed(2)}
                             </div>
                           </div>
-                          <div className="w-1/12 flex items-center justify-center">
+
+                          {/* Remove Button */}
+                          <div className="w-[5%] flex items-center justify-center">
                             <Icon.XCircle
                               className="text-xl max-md:text-base text-red cursor-pointer hover:text-black duration-500"
-                              onClick={() => {
-                                removeFromCart(product._id);
-                              }}
+                              onClick={() => removeFromCart(product._id)}
                             />
                           </div>
                         </div>
@@ -205,6 +231,7 @@ const Cart = () => {
                   </div>
                 </div>
               </div>
+
               <div className="input-block discount-code w-full h-12 sm:mt-7 mt-5">
                 <form className="w-full h-full relative">
                   <input
@@ -239,7 +266,7 @@ const Cart = () => {
                       <span>.00</span>
                     </div>
                   </div>
-                  <div className="ship-block py-5 flex justify-between border-b border-line">
+                  {/* <div className="ship-block py-5 flex justify-between border-b border-line">
                     <div className="text-title">Shipping</div>
                     <div className="choose-type flex gap-12">
                       <div className="left">
@@ -307,7 +334,7 @@ const Cart = () => {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                   <div className="total-cart-block pt-4 pb-4 flex justify-between">
                     <div className="heading5">Total</div>
                     <div className="heading5">

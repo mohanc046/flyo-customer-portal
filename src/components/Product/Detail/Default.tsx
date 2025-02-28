@@ -146,7 +146,7 @@ const Default: React.FC<Props> = ({ productId }) => {
               </div>
               <div className="flex items-center gap-3 flex-wrap mt-5 pb-6 border-b border-line">
                 <div className="product-price heading5">
-                  ₹{product.price}.00
+                  ₹{product.discountPrice}.00
                 </div>
                 <div className="w-px h-4 bg-line"></div>
                 <div className="product-origin-price font-normal text-secondary2">
