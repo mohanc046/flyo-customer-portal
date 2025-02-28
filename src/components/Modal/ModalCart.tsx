@@ -46,7 +46,9 @@ const ModalCart = ({
   let [totalCart, setTotalCart] = useState<number>(0);
   let [discountCart, setDiscountCart] = useState<number>(0);
 
-  cartState.cartArray.map((item) => (totalCart += item.price * item.quantity));
+  cartState.cartArray.map(
+    (item) => (totalCart += (item.discountPrice ?? item.price) * item.quantity)
+  );
 
   return (
     <>
@@ -102,7 +104,7 @@ const ModalCart = ({
                           {product.selectedColor || product.inventory.colors[0]}
                         </div>
                         <div className="product-price text-title">
-                          ₹{product.price}.00
+                          ₹{product.discountPrice ?? product.price}.00
                         </div>
                       </div>
                     </div>

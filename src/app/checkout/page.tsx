@@ -100,7 +100,7 @@ const CheckoutForm = ({ setClientSceret }) => {
       // Create the order
       const { client_secret } = await createOrder(
         shippingAddress,
-        totalCart - discount + ship,
+        totalCart - Number(discount) + Number(ship),
         products,
         storeId
       );
