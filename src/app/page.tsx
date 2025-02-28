@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useEffect } from "react";
+import TawkMessengerReact from "@tawk.to/tawk-messenger-react";
+import { FloatingWhatsApp } from "react-floating-whatsapp";
 import MenuOne from "@/components/Header/Menu/MenuOne";
 import SliderOne from "@/components/Slider/SliderOne";
 import WhatNewOne from "@/components/Home1/WhatNewOne";
@@ -13,12 +15,43 @@ import { useSearchParams } from "next/navigation";
 import { fetchStoreInfo } from "@/utils/api.service";
 import { useStore } from "@/context/StoreContext";
 import { getDomainName } from "@/utils/utils";
-import { debounce } from 'lodash'; // Or implement your own debounce function
+import { debounce } from "lodash";
+import _ from "lodash";
+import ReactGA from "react-ga";
 
 export default function Home() {
   const searchParams = useSearchParams();
   const { setStoreData, setIsLoading } = useStore();
   const storeName = getDomainName();
+
+  const shopInformation = localStorage.getItem("storeInfo");
+
+  const { pluginConfig = {}, storeInformation: exisintgShopInformation = {} } =
+    JSON.parse(shopInformation) ?? {};
+
+  const {
+    propertyId = null,
+    widgetId = null,
+    isActive = false,
+  } = _.get(pluginConfig, "tawk", {});
+
+  const {
+    propertyId: googleAnalyticsTrackingId = null,
+    isActive: isGoogleAnalyticsActive = false,
+  } = _.get(pluginConfig, "googleAnalytics", {});
+
+  const {
+    phoneNumber = null,
+    isActive: isWhatsAppActive = false,
+    userName = "",
+  } = _.get(pluginConfig, "whatsApp", {});
+
+  useEffect(() => {
+    if (!_.isEmpty(googleAnalyticsTrackingId) && isGoogleAnalyticsActive) {
+      ReactGA.initialize(`${googleAnalyticsTrackingId}`);
+      ReactGA.pageview(window.location.pathname + window.location.search);
+    }
+  }, [googleAnalyticsTrackingId, isGoogleAnalyticsActive]);
 
   useEffect(() => {
     const debouncedFetch = debounce(() => {
@@ -27,6 +60,7 @@ export default function Home() {
         fetchStoreInfo(storeName)
           .then((storeData) => {
             setStoreData(storeData);
+            localStorage.setItem("storeInfo", JSON.stringify(storeData?.store));
           })
           .catch((error) => {
             console.error("Error fetching store info:", error);
@@ -55,6 +89,16 @@ export default function Home() {
       <Benefit props="md:py-20 py-10" />
       <Testimonial data={testimonialData} limit={6} />
       <Footer />
+      {propertyId && widgetId && isActive && (
+        <TawkMessengerReact propertyId={propertyId} widgetId={widgetId} />
+      )}
+
+      {phoneNumber && isWhatsAppActive && userName && (
+        <FloatingWhatsApp
+          phoneNumber={`${phoneNumber}`}
+          accountName={`${userName}`}
+        />
+      )}
     </>
   );
 }
