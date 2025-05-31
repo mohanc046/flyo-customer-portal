@@ -16,9 +16,12 @@ import { useToaster } from "@/context/ToasterContext";
 const Cart = () => {
   const [timeLeft, setTimeLeft] = useState(countdownTime());
   const [voucherCode, setVoucherCode] = useState("");
-  const [applyCodeThreshold, setApplyCodeThreshold] = useState(0);
+  const [hasVoucherApplied, setHasVoucherApplied] = useState(false);
   const [manualDiscount, setManualDiscount] = useState(0);
+
   const moneyForFreeship = 150;
+  const minVoucherThreshold = 200;
+  const discountValue = 30;
 
   const router = useRouter();
   const { showToast } = useToaster();
@@ -28,7 +31,6 @@ const Cart = () => {
     const timer = setInterval(() => {
       setTimeLeft(countdownTime());
     }, 1000);
-
     return () => clearInterval(timer);
   }, []);
 
@@ -39,51 +41,48 @@ const Cart = () => {
     let totalCart = 0;
     let discountCart = 0;
 
-    cartState.cartArray.forEach((item) => {
-      totalCart += item.price * item.quantity;
-      discountCart +=
-        (item.price - (item.discountPrice ?? item.price)) * item.quantity;
+    cardProducts.forEach((item) => {
+      const price = item.price;
+      const finalPrice = item.discountPrice ?? item.price;
+      const quantity = item.quantity;
+
+      totalCart += price * quantity;
+      discountCart += (price - finalPrice) * quantity;
     });
 
-    let shipCart =
-      totalCart < moneyForFreeship && cartState.cartArray.length > 0 ? 30 : 0;
-
-    if (totalCart < applyCodeThreshold) {
-      setManualDiscount(0);
-    }
+    const eligibleForShip =
+      totalCart < moneyForFreeship && cardProducts.length > 0;
+    const shipCart = eligibleForShip ? 30 : 0;
 
     return {
       totalCart,
       discountCart: discountCart + manualDiscount,
       shipCart,
+      totalAfterDiscount:
+        totalCart - discountCart - manualDiscount + (eligibleForShip ? 30 : 0),
     };
-  }, [cartState.cartArray, manualDiscount, applyCodeThreshold]);
+  }, [cardProducts, manualDiscount]);
 
-  const handleQuantityChange = (productId: string, newQuantity: number) => {
-    const itemToUpdate = cartState.cartArray.find(
-      (item) => item._id === productId
-    );
-    if (itemToUpdate) {
-      updateCart(
-        productId,
-        newQuantity,
-        itemToUpdate.selectedSize,
-        itemToUpdate.selectedColor
-      );
+  const handleQuantityChange = (productId: any, newQuantity: any) => {
+    const item = cardProducts.find((p) => p._id === productId);
+    if (item && newQuantity >= 1) {
+      updateCart(productId, newQuantity, item.selectedSize, item.selectedColor);
     }
   };
 
   const handleApplyCode = () => {
-    const minValue = 200;
-    const discount = 30;
+    if (hasVoucherApplied) {
+      showToast("Voucher already applied.", "info");
+      return;
+    }
 
-    if (totals.totalCart >= minValue) {
-      setApplyCodeThreshold(minValue);
-      setManualDiscount(discount);
+    if (totals.totalCart >= minVoucherThreshold) {
+      setManualDiscount(discountValue);
+      setHasVoucherApplied(true);
       showToast("Voucher applied!", "success");
     } else {
       showToast(
-        `Minimum order must be ₹${minValue} to apply this code.`,
+        `Minimum order must be ₹${minVoucherThreshold} to apply this code.`,
         "error"
       );
     }
@@ -93,7 +92,7 @@ const Cart = () => {
     const user = isUserLoggedIn();
     if (!_.isEmpty(user)) {
       router.push(
-        `/checkout?discount=${totals.discountCart}&ship=${totals.shipCart}`
+        `/checkout?discount=${totals.discountCart}&ship=${totals.shipCart}&total=${totals.totalCart}`
       );
     } else {
       router.push(`/login`);
@@ -139,8 +138,8 @@ const Cart = () => {
                   ) : (
                     cardProducts.map((product) => (
                       <div
-                        className="item flex md:mt-7 md:pb-7 mt-5 pb-5 border-b border-line w-full"
                         key={product._id}
+                        className="item flex md:mt-7 md:pb-7 mt-5 pb-5 border-b border-line w-full"
                       >
                         <div className="w-[50%] flex items-center gap-6">
                           <div className="bg-img md:w-[100px] w-20 aspect-[3/4]">
@@ -179,14 +178,12 @@ const Cart = () => {
                         <div className="w-[15%] flex items-center justify-center">
                           <div className="quantity-block bg-surface md:p-3 p-2 flex items-center justify-between rounded-lg border border-line md:w-[100px] w-20">
                             <Icon.Minus
-                              onClick={() => {
-                                if (product.quantity > 1) {
-                                  handleQuantityChange(
-                                    product._id,
-                                    product.quantity - 1
-                                  );
-                                }
-                              }}
+                              onClick={() =>
+                                handleQuantityChange(
+                                  product._id,
+                                  product.quantity - 1
+                                )
+                              }
                               className={`text-base max-md:text-sm ${
                                 product.quantity === 1
                                   ? "opacity-40 pointer-events-none"
@@ -231,29 +228,31 @@ const Cart = () => {
               </div>
 
               {/* Voucher Input */}
-              <div className="input-block discount-code w-full h-12 sm:mt-7 mt-5">
-                <form
-                  className="w-full h-full relative"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleApplyCode();
-                  }}
-                >
-                  <input
-                    type="text"
-                    value={voucherCode}
-                    onChange={(e) => setVoucherCode(e.target.value)}
-                    placeholder="Add voucher discount"
-                    className="w-full h-full bg-surface pl-4 pr-14 rounded-lg border border-line"
-                  />
-                  <button
-                    type="submit"
-                    className="button-main absolute top-1 bottom-1 right-1 px-5 rounded-lg flex items-center justify-center"
+              {!isCartEmpty && (
+                <div className="input-block discount-code w-full h-12 sm:mt-7 mt-5">
+                  <form
+                    className="w-full h-full relative"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      handleApplyCode();
+                    }}
                   >
-                    Apply Code
-                  </button>
-                </form>
-              </div>
+                    <input
+                      type="text"
+                      value={voucherCode}
+                      onChange={(e) => setVoucherCode(e.target.value)}
+                      placeholder="Add voucher discount"
+                      className="w-full h-full bg-surface pl-4 pr-14 rounded-lg border border-line"
+                    />
+                    <button
+                      type="submit"
+                      className="button-main absolute top-1 bottom-1 right-1 px-5 rounded-lg flex items-center justify-center"
+                    >
+                      Apply Code
+                    </button>
+                  </form>
+                </div>
+              )}
             </div>
 
             {/* Summary Sidebar */}
@@ -267,21 +266,21 @@ const Cart = () => {
                   </div>
                   <div className="py-5 flex justify-between border-b border-line">
                     <div className="text-title">Discounts</div>
-                    <div className="text-title">₹{totals.discountCart}.00</div>
+                    <div className="text-title">₹-{totals.discountCart}.00</div>
                   </div>
                   <div className="pt-4 pb-4 flex justify-between">
                     <div className="heading5">Total</div>
                     <div className="heading5">
-                      ₹{totals.totalCart}
-                      .00
+                      ₹{(totals.totalCart - totals.discountCart).toFixed(2)}
                     </div>
                   </div>
+
                   <div className="block-button flex flex-col items-center gap-y-4 mt-5">
                     <div
                       className={`checkout-btn button-main text-center w-full ${
                         isCartEmpty ? "disabled" : ""
                       }`}
-                      onClick={!isCartEmpty ? redirectToCheckout : undefined}
+                      onClick={redirectToCheckout}
                     >
                       Proceed To Checkout
                     </div>

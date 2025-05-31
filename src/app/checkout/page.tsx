@@ -39,6 +39,7 @@ const CheckoutForm = ({ setClientSceret }: any) => {
 
   const discount = Number(searchParams.get("discount") || 0);
   const ship = Number(searchParams.get("ship") || 0);
+  const total = Number(searchParams.get("total") || 0);
   const [shippingAddress, setShippingAddress] = useState({
     doorNo: "",
     street: "",
@@ -50,11 +51,14 @@ const CheckoutForm = ({ setClientSceret }: any) => {
   const [totalCart, setTotalCart] = useState<number>(0);
 
   useEffect(() => {
-    const cartTotal = cartState.cartArray.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-    setTotalCart(cartTotal);
+    // const cartTotal = cartState.cartArray.reduce(
+    //   (sum, item) =>
+    //     sum + item.discountPrice
+    //       ? item?.discountPrice
+    //       : item?.price * item.quantity,
+    //   0
+    // );
+    setTotalCart(total);
   }, [cartState.cartArray]);
 
   const handlePayment = (item: string) => {
@@ -286,23 +290,27 @@ const CheckoutForm = ({ setClientSceret }: any) => {
                   ))
                 )}
               </div>
-              {/* <div className="discount-block py-5 flex justify-between border-b border-line">
-                <div className="text-title">Discounts</div>
-                <div className="text-title">
-                  -₹<span className="discount">{discount}</span>
-                  <span>.00</span>
+              {/* Discount */}
+              <div className="discount-block py-5 flex justify-between border-b border-line">
+                <div className="text-title">Discount</div>
+                <div className="text-title text-green-600">
+                  − ₹{discount}.00
                 </div>
-              </div> */}
+              </div>
+
+              {/* Shipping */}
               <div className="ship-block py-5 flex justify-between border-b border-line">
                 <div className="text-title">Shipping</div>
                 <div className="text-title">
                   {Number(ship) === 0 ? "Free" : `₹${ship}.00`}
                 </div>
               </div>
+
+              {/* Total */}
               <div className="total-cart-block pt-5 flex justify-between">
                 <div className="heading5">Total</div>
                 <div className="heading5 total-cart">
-                  ₹{totalCart + Number(ship)}.00
+                  ₹{(totalCart - discount + ship).toFixed(2)}
                 </div>
               </div>
             </div>
