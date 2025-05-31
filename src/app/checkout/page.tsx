@@ -20,7 +20,7 @@ import { Spinner } from "@phosphor-icons/react";
 import { useToaster } from "@/context/ToasterContext";
 import { useRouter } from "next/navigation";
 
-const CheckoutForm = ({ setClientSceret }) => {
+const CheckoutForm = ({ setClientSceret }: any) => {
   const router = useRouter();
   const stripe = useStripe();
   const elements = useElements();
@@ -286,13 +286,13 @@ const CheckoutForm = ({ setClientSceret }) => {
                   ))
                 )}
               </div>
-              <div className="discount-block py-5 flex justify-between border-b border-line">
+              {/* <div className="discount-block py-5 flex justify-between border-b border-line">
                 <div className="text-title">Discounts</div>
                 <div className="text-title">
                   -₹<span className="discount">{discount}</span>
                   <span>.00</span>
                 </div>
-              </div>
+              </div> */}
               <div className="ship-block py-5 flex justify-between border-b border-line">
                 <div className="text-title">Shipping</div>
                 <div className="text-title">
@@ -302,7 +302,7 @@ const CheckoutForm = ({ setClientSceret }) => {
               <div className="total-cart-block pt-5 flex justify-between">
                 <div className="heading5">Total</div>
                 <div className="heading5 total-cart">
-                  ₹{totalCart - Number(discount) + Number(ship)}.00
+                  ₹{totalCart + Number(ship)}.00
                 </div>
               </div>
             </div>

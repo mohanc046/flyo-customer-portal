@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import _ from "lodash";
 import { useRouter } from "next/navigation";
 import TopNavOne from "@/components/Header/TopNav/TopNavOne";
@@ -15,16 +15,14 @@ import { useToaster } from "@/context/ToasterContext";
 
 const Cart = () => {
   const [timeLeft, setTimeLeft] = useState(countdownTime());
-  const [totalCart, setTotalCart] = useState(0);
-  const [discountCart, setDiscountCart] = useState(0);
-  const [shipCart, setShipCart] = useState(0);
+  const [voucherCode, setVoucherCode] = useState("");
+  const [applyCodeThreshold, setApplyCodeThreshold] = useState(0);
+  const [manualDiscount, setManualDiscount] = useState(0);
+  const moneyForFreeship = 150;
 
   const router = useRouter();
   const { showToast } = useToaster();
   const { cartState, updateCart, removeFromCart } = useCart();
-
-  const moneyForFreeship = 150;
-  const applyCode = 0; // Static for now — should come from user input in real app
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -34,28 +32,32 @@ const Cart = () => {
     return () => clearInterval(timer);
   }, []);
 
-  useEffect(() => {
-    let subtotal = 0;
-    let discount = 0;
+  const cardProducts = _.get(cartState, "cartArray", []);
+  const isCartEmpty = _.isEmpty(cardProducts);
+
+  const totals = useMemo(() => {
+    let totalCart = 0;
+    let discountCart = 0;
 
     cartState.cartArray.forEach((item) => {
-      const effectivePrice = item.discountPrice ?? item.price;
-      subtotal += effectivePrice * item.quantity;
-
-      if (item.discountPrice) {
-        discount += (item.price - item.discountPrice) * item.quantity;
-      }
+      totalCart += item.price * item.quantity;
+      discountCart +=
+        (item.price - (item.discountPrice ?? item.price)) * item.quantity;
     });
 
-    setTotalCart(subtotal);
-    setDiscountCart(discount);
+    let shipCart =
+      totalCart < moneyForFreeship && cartState.cartArray.length > 0 ? 30 : 0;
 
-    if (cartState.cartArray.length === 0) {
-      setShipCart(0);
-    } else {
-      setShipCart(subtotal < moneyForFreeship ? 30 : 0);
+    if (totalCart < applyCodeThreshold) {
+      setManualDiscount(0);
     }
-  }, [cartState.cartArray]);
+
+    return {
+      totalCart,
+      discountCart: discountCart + manualDiscount,
+      shipCart,
+    };
+  }, [cartState.cartArray, manualDiscount, applyCodeThreshold]);
 
   const handleQuantityChange = (productId: string, newQuantity: number) => {
     const itemToUpdate = cartState.cartArray.find(
@@ -71,17 +73,32 @@ const Cart = () => {
     }
   };
 
+  const handleApplyCode = () => {
+    const minValue = 200;
+    const discount = 30;
+
+    if (totals.totalCart >= minValue) {
+      setApplyCodeThreshold(minValue);
+      setManualDiscount(discount);
+      showToast("Voucher applied!", "success");
+    } else {
+      showToast(
+        `Minimum order must be ₹${minValue} to apply this code.`,
+        "error"
+      );
+    }
+  };
+
   const redirectToCheckout = () => {
     const user = isUserLoggedIn();
     if (!_.isEmpty(user)) {
-      router.push(`/checkout?discount=${discountCart}&ship=${shipCart}`);
+      router.push(
+        `/checkout?discount=${totals.discountCart}&ship=${totals.shipCart}`
+      );
     } else {
       router.push(`/login`);
     }
   };
-
-  const cardProducts = _.get(cartState, "cartArray", []);
-  const isCartEmpty = _.isEmpty(cardProducts);
 
   return (
     <>
@@ -95,9 +112,10 @@ const Cart = () => {
           <div className="content-main flex justify-between max-xl:flex-col gap-y-8">
             <div
               className={`${
-                !isCartEmpty ? "xl:w-2/3" : "xl:w-full"
+                !isCartEmpty ? "xl:w-2/3" : "xl:w-3/3"
               } xl:pr-3 w-full`}
             >
+              {/* Cart List */}
               <div className="list-product w-full sm:mt-7 mt-5">
                 <div className="heading bg-surface bora-4 pt-4 pb-4">
                   <div className="flex">
@@ -211,33 +229,57 @@ const Cart = () => {
                   )}
                 </div>
               </div>
+
+              {/* Voucher Input */}
+              <div className="input-block discount-code w-full h-12 sm:mt-7 mt-5">
+                <form
+                  className="w-full h-full relative"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleApplyCode();
+                  }}
+                >
+                  <input
+                    type="text"
+                    value={voucherCode}
+                    onChange={(e) => setVoucherCode(e.target.value)}
+                    placeholder="Add voucher discount"
+                    className="w-full h-full bg-surface pl-4 pr-14 rounded-lg border border-line"
+                  />
+                  <button
+                    type="submit"
+                    className="button-main absolute top-1 bottom-1 right-1 px-5 rounded-lg flex items-center justify-center"
+                  >
+                    Apply Code
+                  </button>
+                </form>
+              </div>
             </div>
 
+            {/* Summary Sidebar */}
             {!isCartEmpty && (
               <div className="xl:w-1/3 xl:pl-12 w-full">
                 <div className="checkout-block bg-surface p-6 rounded-2xl">
                   <div className="heading5">Order Summary</div>
-
-                  <div className="total-block py-5 flex justify-between border-b border-line">
+                  <div className="py-5 flex justify-between border-b border-line">
                     <div className="text-title">Subtotal</div>
-                    <div className="text-title">
-                      ₹<span className="total-product">{totalCart}</span>.00
-                    </div>
+                    <div className="text-title">₹{totals.totalCart}.00</div>
                   </div>
-
-                  <div className="total-cart-block pt-4 pb-4 flex justify-between">
+                  <div className="py-5 flex justify-between border-b border-line">
+                    <div className="text-title">Discounts</div>
+                    <div className="text-title">₹{totals.discountCart}.00</div>
+                  </div>
+                  <div className="pt-4 pb-4 flex justify-between">
                     <div className="heading5">Total</div>
                     <div className="heading5">
-                      ₹<span className="total-cart heading5">{totalCart}</span>{" "}
-                      <span className="heading5">.00</span>
+                      ₹{totals.totalCart}
+                      .00
                     </div>
                   </div>
-
                   <div className="block-button flex flex-col items-center gap-y-4 mt-5">
                     <div
-                      aria-disabled={isCartEmpty}
                       className={`checkout-btn button-main text-center w-full ${
-                        isCartEmpty ? "disabled opacity-50" : ""
+                        isCartEmpty ? "disabled" : ""
                       }`}
                       onClick={!isCartEmpty ? redirectToCheckout : undefined}
                     >
