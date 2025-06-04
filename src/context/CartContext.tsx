@@ -14,6 +14,7 @@ interface CartItem extends ProductType2 {
 interface CartState {
   cartArray: CartItem[];
   isLoading: boolean;
+  clientStripeSecret?: string;
 }
 
 type CartAction =
@@ -29,7 +30,8 @@ type CartAction =
       };
     }
   | { type: "LOAD_CART"; payload: CartItem[] }
-  | { type: "SET_LOADING"; payload: boolean };
+  | { type: "SET_LOADING"; payload: boolean }
+  | { type: "SET_STRIPE_CLIENT_SECRET"; payload: string };
 
 interface CartContextProps {
   cartState: CartState;
@@ -42,6 +44,7 @@ interface CartContextProps {
     selectedColor: string
   ) => void;
   setLoading: (isLoading: boolean) => void;
+  setClientStripeSecret: (id: string) => void;
 }
 
 const CartContext = createContext<CartContextProps | undefined>(undefined);
@@ -89,6 +92,11 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
       return {
         ...state,
         isLoading: action.payload,
+      };
+    case "SET_STRIPE_CLIENT_SECRET":
+      return {
+        ...state,
+        clientStripeSecret: action.payload,
       };
     default:
       return state;
@@ -145,9 +153,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     dispatch({ type: "SET_LOADING", payload: isLoading });
   };
 
+  const setClientStripeSecret = (id: string) => {
+    dispatch({ type: "SET_STRIPE_CLIENT_SECRET", payload: id });
+  };
+
   return (
     <CartContext.Provider
-      value={{ cartState, addToCart, removeFromCart, updateCart, setLoading }}
+      value={{ cartState, addToCart, removeFromCart, updateCart, setLoading, setClientStripeSecret }}
     >
       {children}
     </CartContext.Provider>

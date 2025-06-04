@@ -113,3 +113,30 @@ export const createOrder = async (
     throw error;
   }
 };
+
+export const completeOrder = async (
+  paymentId
+) => {
+  const URL = getServiceURL();
+  try {
+    const response = await axios.post(
+      `${URL}/order/complete`,
+      {
+        paymentId
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${isUserLoggedIn()}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error creating order:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};

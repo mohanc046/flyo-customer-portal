@@ -12,20 +12,37 @@ import { countdownTime } from "@/store/countdownTime";
 import ImgOrVideoRenderer from "@/components/ImgOrVideoRenderer/ImgOrVideoRenderer";
 import { isUserLoggedIn } from "@/utils/utils";
 import { useToaster } from "@/context/ToasterContext";
+import { useStore } from "@/context/StoreContext";
+import { createOrder } from "@/utils/api.service";
 
 const Cart = () => {
   const [timeLeft, setTimeLeft] = useState(countdownTime());
   const [voucherCode, setVoucherCode] = useState("");
   const [hasVoucherApplied, setHasVoucherApplied] = useState(false);
   const [manualDiscount, setManualDiscount] = useState(0);
-
   const moneyForFreeship = 150;
   const minVoucherThreshold = 200;
   const discountValue = 30;
 
   const router = useRouter();
   const { showToast } = useToaster();
-  const { cartState, updateCart, removeFromCart } = useCart();
+  const { cartState, updateCart, removeFromCart, setLoading, setClientStripeSecret } = useCart();
+  const { storeData } = useStore();
+
+  const [shippingAddress, setShippingAddress] = useState({
+    doorNo: "",
+    street: "",
+    pinCode: "",
+    state: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setShippingAddress((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -88,9 +105,12 @@ const Cart = () => {
     }
   };
 
-  const redirectToCheckout = () => {
+  const redirectToCheckout = async () => {
     const user = isUserLoggedIn();
     if (!_.isEmpty(user)) {
+
+      await initiateOrder();
+
       router.push(
         `/checkout?discount=${totals.discountCart}&ship=${totals.shipCart}&total=${totals.totalCart}`
       );
@@ -98,6 +118,40 @@ const Cart = () => {
       router.push(`/login`);
     }
   };
+
+    const initiateOrder = async () => {
+  
+      try {
+  
+        setLoading(true);
+  
+        // Extract products from cartState
+        const products = cartState.cartArray.map((item) => ({
+          productId: item._id,
+          quantity: item.quantity,
+          color: item.selectedColor,
+          size: item.selectedSize,
+        }));
+  
+        const storeId = storeData?.store?._id;
+  
+        // Create the order
+        const { client_secret } = await createOrder(
+          shippingAddress,
+          totals.totalCart - Number(totals.discountCart) + Number(totals.shipCart),
+          products,
+          storeId
+        );
+  
+        setClientStripeSecret(client_secret);
+  
+      } catch (error) {
+        console.log(error, "-------error");
+      } finally {
+        setLoading(false);
+      }
+  
+    }
 
   return (
     <>
@@ -224,6 +278,62 @@ const Cart = () => {
                       </div>
                     ))
                   )}
+                </div>
+              </div>
+
+              <div className="left lg:w-1/2">
+                <div className="information">
+                  <div className="heading5">Shipping Address</div>
+                  <div className="form-checkout mt-5">
+                    <form>
+                      <div className="grid sm:grid-cols-2 gap-4 gap-y-5 flex-wrap">
+                        <div>
+                          <input
+                            className="border-line px-4 py-3 w-full rounded-lg"
+                            id="doorNo"
+                            type="text"
+                            placeholder="Door No *"
+                            value={shippingAddress.doorNo}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
+                        <div>
+                          <input
+                            className="border-line px-4 py-3 w-full rounded-lg"
+                            id="street"
+                            type="text"
+                            placeholder="Address 1 (street) *"
+                            value={shippingAddress.street}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
+                        <div>
+                          <input
+                            className="border-line px-4 py-3 w-full rounded-lg"
+                            id="state"
+                            type="text"
+                            placeholder="Address 1 (city and state) *"
+                            value={shippingAddress.state}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
+                        <div>
+                          <input
+                            className="border-line px-4 py-3 w-full rounded-lg"
+                            id="pinCode"
+                            type="text"
+                            placeholder="Pin Code *"
+                            value={shippingAddress.pinCode}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
+                      </div>
+                    </form>
+                  </div>
                 </div>
               </div>
 

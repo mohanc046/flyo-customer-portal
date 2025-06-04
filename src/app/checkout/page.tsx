@@ -14,18 +14,18 @@ import {
   useElements,
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { createOrder, getStripePublishableKey } from "@/utils/api.service";
+import { completeOrder, createOrder, getStripePublishableKey } from "@/utils/api.service";
 import { useStore } from "@/context/StoreContext";
 import { Spinner } from "@phosphor-icons/react";
 import { useToaster } from "@/context/ToasterContext";
 import { useRouter } from "next/navigation";
 
-const CheckoutForm = ({ setClientSceret }: any) => {
+const CheckoutForm = ({ clientSecret }: any) => {
   const router = useRouter();
   const stripe = useStripe();
   const elements = useElements();
   const searchParams = useSearchParams();
-  const { cartState, setLoading } = useCart();
+  const { cartState, setLoading , setClientStripeSecret} = useCart();
   const { storeData } = useStore();
   const { showToast } = useToaster();
   const status = searchParams.get("redirect_status") || null;
@@ -73,6 +73,16 @@ const CheckoutForm = ({ setClientSceret }: any) => {
     }));
   };
 
+  const updateOrderStatus = async (paymentId: any) => {
+    try {
+      const result = await completeOrder(paymentId);
+      setClientStripeSecret('');
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -85,38 +95,17 @@ const CheckoutForm = ({ setClientSceret }: any) => {
       setLoading(true);
       // Trigger form validation in Stripe elements
       const validation = await elements.submit();
-      if (validation.error) {
-        setLoading(false);
-        console.error("Validation error:", validation.error.message);
-        return;
-      }
-
-      // Extract products from cartState
-      const products = cartState.cartArray.map((item) => ({
-        productId: item._id,
-        quantity: item.quantity,
-        color: item.selectedColor,
-        size: item.selectedSize,
-      }));
-
-      const storeId = storeData?.store?._id;
-
-      // Create the order
-      const { client_secret } = await createOrder(
-        shippingAddress,
-        totalCart - Number(discount) + Number(ship),
-        products,
-        storeId
-      );
-
-      setClientSceret(client_secret);
-
+  
       // Confirm payment using Stripe
-      const { error } = await stripe.confirmPayment({
+      const { paymentIntent, error } = await stripe.confirmPayment({
         elements,
-        clientSecret: client_secret,
+        clientSecret: clientSecret,
         redirect: "if_required",
       });
+
+      const { id } = paymentIntent || {}; 
+      
+      await updateOrderStatus(id);
 
       setLoading(false);
 
@@ -149,52 +138,6 @@ const CheckoutForm = ({ setClientSceret }: any) => {
               <div className="heading5">Shipping Address</div>
               <div className="form-checkout mt-5">
                 <form onSubmit={handleSubmit}>
-                  <div className="grid sm:grid-cols-2 gap-4 gap-y-5 flex-wrap">
-                    <div>
-                      <input
-                        className="border-line px-4 py-3 w-full rounded-lg"
-                        id="doorNo"
-                        type="text"
-                        placeholder="Door No *"
-                        value={shippingAddress.doorNo}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <input
-                        className="border-line px-4 py-3 w-full rounded-lg"
-                        id="street"
-                        type="text"
-                        placeholder="Address 1 (street) *"
-                        value={shippingAddress.street}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <input
-                        className="border-line px-4 py-3 w-full rounded-lg"
-                        id="state"
-                        type="text"
-                        placeholder="Address 1 (city and state) *"
-                        value={shippingAddress.state}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <input
-                        className="border-line px-4 py-3 w-full rounded-lg"
-                        id="pinCode"
-                        type="text"
-                        placeholder="Pin Code *"
-                        value={shippingAddress.pinCode}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
                   <div className="payment-block md:mt-10 mt-6">
                     <div className="heading5">Choose payment Option:</div>
                     <div className="list-payment mt-5">
@@ -322,8 +265,9 @@ const CheckoutForm = ({ setClientSceret }: any) => {
 };
 
 const Checkout = () => {
+  const { cartState } = useCart();
+  const { clientStripeSecret } = cartState;
   const [stripePromise, setStripePromise] = useState<any>(null);
-  const [clientSecret, setClientSecret] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchKeyAndInitializeStripe = async () => {
@@ -337,7 +281,7 @@ const Checkout = () => {
     };
 
     fetchKeyAndInitializeStripe();
-  }, []);
+  }, [clientStripeSecret]);
 
   const fetchStripeKey = async () => {
     try {
@@ -364,13 +308,11 @@ const Checkout = () => {
           <Elements
             stripe={stripePromise}
             options={{
-              clientSecret:
-                clientSecret ||
-                "pi_3Qht0VETfYJwWWxs06oFcVfK_secret_wah12ufki8yPwfaTYJtykWuiR",
+              clientSecret: clientStripeSecret
             }}
           >
             <PaymentElement />
-            <CheckoutForm setClientSceret={setClientSecret} />
+            <CheckoutForm clientSecret={clientStripeSecret} />
           </Elements>
         </div>
       </div>
