@@ -14,7 +14,11 @@ import {
   useElements,
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { completeOrder, createOrder, getStripePublishableKey } from "@/utils/api.service";
+import {
+  completeOrder,
+  createOrder,
+  getStripePublishableKey,
+} from "@/utils/api.service";
 import { useStore } from "@/context/StoreContext";
 import { Spinner } from "@phosphor-icons/react";
 import { useToaster } from "@/context/ToasterContext";
@@ -25,7 +29,7 @@ const CheckoutForm = ({ clientSecret }: any) => {
   const stripe = useStripe();
   const elements = useElements();
   const searchParams = useSearchParams();
-  const { cartState, setLoading , setClientStripeSecret} = useCart();
+  const { cartState, setLoading, setClientStripeSecret } = useCart();
   const { storeData } = useStore();
   const { showToast } = useToaster();
   const status = searchParams.get("redirect_status") || null;
@@ -76,12 +80,12 @@ const CheckoutForm = ({ clientSecret }: any) => {
   const updateOrderStatus = async (paymentId: any) => {
     try {
       const result = await completeOrder(paymentId);
-      setClientStripeSecret('');
+      setClientStripeSecret("");
     } catch (error) {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -95,7 +99,7 @@ const CheckoutForm = ({ clientSecret }: any) => {
       setLoading(true);
       // Trigger form validation in Stripe elements
       const validation = await elements.submit();
-  
+
       // Confirm payment using Stripe
       const { paymentIntent, error } = await stripe.confirmPayment({
         elements,
@@ -103,9 +107,7 @@ const CheckoutForm = ({ clientSecret }: any) => {
         redirect: "if_required",
       });
 
-      const { id } = paymentIntent || {}; 
-      
-      await updateOrderStatus(id);
+      const { id } = paymentIntent || {};
 
       setLoading(false);
 
@@ -113,6 +115,7 @@ const CheckoutForm = ({ clientSecret }: any) => {
         console.error("Payment error:", error.message);
         showToast("Payment Failed", "error");
       } else {
+        await updateOrderStatus(id);
         showToast("Order Placed", "success");
         setTimeout(() => {
           router.push(`/orders`);
@@ -132,10 +135,9 @@ const CheckoutForm = ({ clientSecret }: any) => {
   return (
     <div className="cart-block md:py-20 py-10">
       <div className="container">
-        <div className="content-main flex justify-between">
+        <div className="content-main flex justify-between max-xl:flex-col">
           <div className="left lg:w-1/2">
             <div className="information">
-              <div className="heading5">Shipping Address</div>
               <div className="form-checkout mt-5">
                 <form onSubmit={handleSubmit}>
                   <div className="payment-block md:mt-10 mt-6">
@@ -188,7 +190,7 @@ const CheckoutForm = ({ clientSecret }: any) => {
           </div>
           <div className="right lg:w-12/12 mb-5">
             <div className="checkout-block">
-              <div className="heading5 pb-3">Your Order</div>
+              <div className="heading5 pb-3 mt-5">Your Order</div>
               <div className="list-product-checkout">
                 {cartState.cartArray.length < 1 ? (
                   <p className="text-button pt-3">No product in cart</p>
@@ -308,7 +310,7 @@ const Checkout = () => {
           <Elements
             stripe={stripePromise}
             options={{
-              clientSecret: clientStripeSecret
+              clientSecret: clientStripeSecret,
             }}
           >
             <PaymentElement />

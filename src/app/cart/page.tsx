@@ -26,7 +26,13 @@ const Cart = () => {
 
   const router = useRouter();
   const { showToast } = useToaster();
-  const { cartState, updateCart, removeFromCart, setLoading, setClientStripeSecret } = useCart();
+  const {
+    cartState,
+    updateCart,
+    removeFromCart,
+    setLoading,
+    setClientStripeSecret,
+  } = useCart();
   const { storeData } = useStore();
 
   const [shippingAddress, setShippingAddress] = useState({
@@ -107,51 +113,55 @@ const Cart = () => {
 
   const redirectToCheckout = async () => {
     const user = isUserLoggedIn();
+    const { doorNo, street, pinCode, state } = shippingAddress;
     if (!_.isEmpty(user)) {
+      if (doorNo && street && pinCode && state) {
+        await initiateOrder();
 
-      await initiateOrder();
-
-      router.push(
-        `/checkout?discount=${totals.discountCart}&ship=${totals.shipCart}&total=${totals.totalCart}`
-      );
+        router.push(
+          `/checkout?discount=${totals.discountCart}&ship=${totals.shipCart}&total=${totals.totalCart}`
+        );
+      } else {
+        showToast("Please enter address details", "error");
+      }
     } else {
       router.push(`/login`);
     }
   };
 
-    const initiateOrder = async () => {
-  
-      try {
-  
-        setLoading(true);
-  
-        // Extract products from cartState
-        const products = cartState.cartArray.map((item) => ({
-          productId: item._id,
-          quantity: item.quantity,
-          color: item.selectedColor,
-          size: item.selectedSize,
-        }));
-  
-        const storeId = storeData?.store?._id;
-  
-        // Create the order
-        const { client_secret } = await createOrder(
-          shippingAddress,
-          totals.totalCart - Number(totals.discountCart) + Number(totals.shipCart),
-          products,
-          storeId
-        );
-  
-        setClientStripeSecret(client_secret);
-  
-      } catch (error) {
-        console.log(error, "-------error");
-      } finally {
-        setLoading(false);
-      }
-  
+  const initiateOrder = async () => {
+    try {
+      setLoading(true);
+
+      // Extract products from cartState
+      const products = cartState.cartArray.map((item) => ({
+        productId: item._id,
+        productName: item.productName,
+        price: item.discountPrice ? item.discountPrice : item.price,
+        quantity: item.quantity,
+        color: item.selectedColor,
+        size: item.selectedSize,
+      }));
+
+      const storeId = storeData?.store?._id;
+
+      // Create the order
+      const { client_secret } = await createOrder(
+        shippingAddress,
+        totals.totalCart -
+          Number(totals.discountCart) +
+          Number(totals.shipCart),
+        products,
+        storeId
+      );
+
+      setClientStripeSecret(client_secret);
+    } catch (error) {
+      console.log(error, "-------error");
+    } finally {
+      setLoading(false);
     }
+  };
 
   return (
     <>
@@ -283,7 +293,7 @@ const Cart = () => {
 
               <div className="left lg:w-1/2">
                 <div className="information">
-                  <div className="heading5">Shipping Address</div>
+                  <div className="heading5 mt-5">Shipping Address</div>
                   <div className="form-checkout mt-5">
                     <form>
                       <div className="grid sm:grid-cols-2 gap-4 gap-y-5 flex-wrap">

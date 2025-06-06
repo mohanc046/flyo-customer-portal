@@ -90,14 +90,12 @@
     @media (max-width: 800px) {
         .content-main {
             display: flex;
-            flex-direction: column-reverse;
         }
     }
 
     @media (max-width: 640px) {
         .content-main {
             display: flex;
-            flex-direction: column-reverse;
             .list-product {
                 overflow-x: auto;
 
