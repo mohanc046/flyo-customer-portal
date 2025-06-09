@@ -24,7 +24,7 @@ import { Spinner } from "@phosphor-icons/react";
 import { useToaster } from "@/context/ToasterContext";
 import { useRouter } from "next/navigation";
 
-const CheckoutForm = ({ clientSecret }: any) => {
+const CheckoutForm = ({ clientSecret, isStripeReady }: any) => {
   const router = useRouter();
   const stripe = useStripe();
   const elements = useElements();
@@ -167,17 +167,17 @@ const CheckoutForm = ({ clientSecret }: any) => {
                   </div>
                   <div
                     className={`block-button md:mt-10 mt-6 ${
-                      cartState.isLoading
+                      !isStripeReady || cartState.isLoading
                         ? "opacity-50 pointer-events-none"
                         : ""
                     }`}
                   >
                     <button
                       type="submit"
-                      className={`button-main2 w-full flex items-center justify-center`}
-                      disabled={cartState.isLoading} // Disable button during loading
+                      className="button-main2 w-full flex items-center justify-center mt-4"
+                      disabled={!isStripeReady || cartState.isLoading}
                     >
-                      {cartState.isLoading ? (
+                      {!isStripeReady || cartState.isLoading ? (
                         <Spinner className="spinner" />
                       ) : (
                         "Proceed"
@@ -270,6 +270,7 @@ const Checkout = () => {
   const { cartState } = useCart();
   const { clientStripeSecret } = cartState;
   const [stripePromise, setStripePromise] = useState<any>(null);
+  const [isStripeReady, setIsStripeReady] = useState(false);
 
   useEffect(() => {
     const fetchKeyAndInitializeStripe = async () => {
@@ -297,10 +298,10 @@ const Checkout = () => {
 
   return (
     <>
-      <TopNavOne
+      {/* <TopNavOne
         props="style-one bg-black"
         slogan="New customers save 10% with the code GET10"
-      />
+      /> */}
       <div id="header" className="relative w-full">
         <MenuOne props="bg-transparent" />
         <Breadcrumb heading="Shopping cart" subHeading="Shopping cart" />
@@ -313,8 +314,11 @@ const Checkout = () => {
               clientSecret: clientStripeSecret,
             }}
           >
-            <PaymentElement />
-            <CheckoutForm clientSecret={clientStripeSecret} />
+            <PaymentElement onReady={() => setIsStripeReady(true)} />
+            <CheckoutForm
+              clientSecret={clientStripeSecret}
+              isStripeReady={isStripeReady}
+            />
           </Elements>
         </div>
       </div>
