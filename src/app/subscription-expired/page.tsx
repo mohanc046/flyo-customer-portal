@@ -3,8 +3,11 @@
 import React from "react";
 import Image from "next/image";
 import "./SubscriptionExpired.scss";
+import { getStoreInfo } from "@/utils/utils";
 
 const SubscriptionExpired = () => {
+  const storeName = getStoreInfo()?.businessName || "Our store";
+
   return (
     <div className="subscription-expired-container">
       <div className="subscription-card">
@@ -14,12 +17,12 @@ const SubscriptionExpired = () => {
           className="expired-gif"
           width={300}
           height={300}
-          priority // Optional: Optimizes for LCP
+          priority
         />
-        <h2 className="expired-title">Oops! Subscription Expired</h2>
+        <h2 className="expired-title">We&apos;ll Be Right Back</h2>
         <p className="expired-text">
-          Your access has expired. Everything&apos;s still here — just waiting
-          for you to come back.
+          {storeName} is currently undergoing maintenance. Thank you for your
+          patience — we’ll be back shortly.
         </p>
       </div>
     </div>
