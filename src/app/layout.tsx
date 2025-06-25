@@ -11,9 +11,9 @@ import CountdownTimeType from "@/type/CountdownType";
 import { countdownTime } from "@/store/countdownTime";
 import DynamicTitle from "./DynamicTitle";
 import Toaster from "@/components/Toaster/Toaster";
+import ClientInitializer from "./ClientInitializer";
 
 const serverTimeLeft: CountdownTimeType = countdownTime();
-
 const instrument = Instrument_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -31,6 +31,7 @@ export default function RootLayout({
       <html lang="en">
         <body className={instrument.className}>
           <DynamicTitle />
+          <ClientInitializer /> {/* 👈 Handles client-side redirect logic */}
           {children}
           <ModalCart serverTimeLeft={serverTimeLeft} />
           <ModalWishlist />
