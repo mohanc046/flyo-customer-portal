@@ -8,6 +8,19 @@ export const getUserType = () => {
   return `${baseURL}`.includes("user") ? "BUYER" : "STORE OWNER";
 };
 
+export const getStoreInfo = () => {
+  if (typeof window === "undefined") return null;
+
+  const storeInfo = localStorage.getItem("storeInfo");
+
+  try {
+    return storeInfo ? JSON.parse(storeInfo) : null;
+  } catch (error) {
+    console.error("Failed to parse storeInfo:", error);
+    return null;
+  }
+};
+
 export function isVideoUrl(url) {
   return `${url}`?.match(/\.(mp4|webm|ogg|mov)$/i) != null;
 }
@@ -19,7 +32,7 @@ export const isMobileView = () => {
 export const getServiceURL = () => {
   const IS_LOCALHOST = window.location.hostname.includes("localhost");
   const SERVICE_URL = IS_LOCALHOST
-    ? process.env.NEXT_PUBLIC_SERVICE_API
+    ? "http://localhost:3005/v1"
     : process.env.NEXT_PUBLIC_SERVICE_API;
 
   return SERVICE_URL;
