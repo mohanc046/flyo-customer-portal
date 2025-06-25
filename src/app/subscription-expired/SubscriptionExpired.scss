@@ -1,0 +1,59 @@
+.subscription-expired-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f9fafc, #eef1f6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+
+  .subscription-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: white;
+    padding: 40px 32px;
+    border-radius: 16px;
+    max-width: 500px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    animation: fadeIn 0.6s ease-in-out;
+  }
+
+  .expired-gif {
+    width: 160px;
+    height: auto;
+    margin-bottom: 24px;
+  }
+
+  .expired-title {
+    font-size: 20px;
+    font-weight: 500;
+    color: #d32f2f;
+    margin-bottom: 16px;
+  }
+
+  .expired-text {
+    font-size: 16px;
+    color: #444;
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+
+  .expired-note {
+    font-size: 14px;
+    color: #888;
+    font-style: italic;
+  }
+
+  /* Optional fade-in animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
